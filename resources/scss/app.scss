@@ -1,0 +1,76 @@
+// 1. Kustomisasi Variabel Bootstrap (agar sesuai tema #0066cc)
+
+// Font Kustom (dari globals.css)
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+// Definisikan warna tema Anda
+$ocean-blue: #0066cc;
+$coral-orange: #ff6b35;
+$coral-red: #e63946;
+$ocean-dark: #003d7a;
+$ocean-light: #e6f2ff;
+$gray-50: #f8f9fa; // Background
+$gray-700: #6c757d; // Teks muted
+
+// Ganti warna default Bootstrap
+$primary: $ocean-blue;
+$secondary: $coral-orange;
+$danger: $coral-red;
+$light: $ocean-light;
+$dark: $ocean-dark;
+
+// Ganti font default
+$font-family-sans-serif: 'Poppins', sans-serif;
+$headings-font-weight: 500;
+
+// Kustomisasi komponen
+$card-border-width: 0;
+$card-box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); // shadow-md
+$badge-font-size: 0.75rem; // text-xs
+$badge-padding-y: 0.25rem; // py-0.5
+$badge-padding-x: 0.5rem;  // px-2
+
+// 2. Import Bootstrap
+@import 'bootstrap/scss/bootstrap';
+
+// 3. Import Bootstrap Icons
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+// 4. Tambahkan CSS Kustom (jika ada)
+body {
+    background-color: $gray-50;
+}
+
+// Gradient kustom dari desain
+.bg-gradient-primary-dark {
+    background: linear-gradient(to bottom right, $ocean-dark, $primary);
+}
+.bg-gradient-secondary-danger {
+    background: linear-gradient(to top right, $secondary, $danger);
+}
+
+// Helper untuk shadow
+.shadow-xl {
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,.1), 0 8px 10px -6px rgba(0,0,0,.1);
+}
+
+// Tweak untuk Nav Link Aktif (mirip desain React)
+.navbar-nav .nav-link.active {
+    color: $primary !important;
+    font-weight: 500;
+}
+
+// Tweak untuk card (shadow on hover, dll)
+.card-product, .card-category {
+    transition: all 0.3s ease;
+}
+.card-product:hover, .card-category:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,.1), 0 8px 10px -6px rgba(0,0,0,.1); // shadow-xl
+}
+.card-product .card-img-top {
+    transition: transform 0.3s ease;
+}
+.card-product:hover .card-img-top {
+    transform: scale(1.1);
+}

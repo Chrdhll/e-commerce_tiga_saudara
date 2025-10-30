@@ -4,11 +4,14 @@ import forms from '@tailwindcss/forms';
 /** @type {import('tailwindcss').Config} */
 export default {
     content: [
-        './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
-        './storage/framework/views/*.php',
-        './resources/views/**/*.blade.php',
+        // Pindai HANYA file-file yang menggunakan Tailwind:
+        './resources/views/layouts/guest.blade.php', // Layout Login/Register Breeze
+        './resources/views/auth/**/*.blade.php',     // Semua view di folder auth
+        './resources/views/dashboard.blade.php',     // Halaman dashboard
+        './resources/views/profile/**/*.blade.php',  // Halaman profil
+        './app/Filament/**/*.php',                  // Panel Admin Filament
+        './resources/views/vendor/filament/**/*.blade.php',
     ],
-
     theme: {
         extend: {
             fontFamily: {
@@ -16,6 +19,5 @@ export default {
             },
         },
     },
-
     plugins: [forms],
 };

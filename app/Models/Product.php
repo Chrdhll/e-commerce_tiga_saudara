@@ -5,7 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasMany; // <--- TAMBAHKAN BARIS INI
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Product extends Model
 {
@@ -24,6 +25,8 @@ class Product extends Model
         'price',
         'stock',
         'image',
+        'unit',     // Ditambahkan dari desain
+        'discount', // Ditambahkan dari desain
     ];
 
     /**
@@ -34,7 +37,7 @@ class Product extends Model
     protected function casts(): array
     {
         return [
-            'price' => 'decimal:2', // Pastikan harga disimpan sebagai desimal
+            'price' => 'decimal:2',
             'stock' => 'integer',
         ];
     }
@@ -51,8 +54,26 @@ class Product extends Model
      * Relasi: Satu Produk bisa ada di banyak OrderItem.
      * (Ini opsional tapi berguna jika ingin lihat histori produk)
      */
-    public function orderItems(): HasMany
+    public function orderItems(): HasMany // <--- Error merah akan hilang
     {
-        return $this->hasMany(OrderItem::class);
+        // (Ini dari model Anda, biarkan saja)
+        // return $this->hasMany(OrderItem::class);
+        
+        // Jika Anda belum punya model OrderItem, komentari saja isinya
+        // agar tidak error saat aplikasi berjalan
+        return $this->hasMany(OrderItem::class); // Pastikan Anda punya model OrderItem
+    }
+
+    /**
+     * Accessor: Menghitung harga final setelah diskon.
+     * Ini penting untuk 'ProductCard'
+     */
+    public function finalPrice(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->discount
+                ? $this->price - ($this->price * $this->discount / 100)
+                : $this->price
+        );
     }
 }
