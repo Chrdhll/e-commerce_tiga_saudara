@@ -1,36 +1,39 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3 Saudara - Fresh. Trust. Simplify.</title>
+    
+    <!-- Alpine.js (Pindahkan ke head agar siap saat modal diklik) -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+    <!-- Vite Assets (HANYA Bootstrap) -->
+    @vite(['resources/scss/app.scss', 'resources/js/app.js'])
+</head>
+<body class="bg-light">
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    {{-- 
+      Inisialisasi Alpine untuk state modal. 
+      x-data akan diwariskan ke semua child element, 
+      termasuk navbar dan modal.
+    --}}
+    <div x-data="{ mode: 'login' }">
+        <!-- Navbar -->
+        @include('partials.navbar')
 
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-            @include('layouts.navigation')
+        <!-- Konten Halaman Utama -->
+        <main>
+            @yield('content')
+        </main>
 
-            <!-- Page Heading -->
-            @isset($header)
-                <header class="bg-white dark:bg-gray-800 shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endisset
+        <!-- Footer -->
+        @include('partials.footer')
 
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
-        </div>
-    </body>
+        <!-- Modal & Offcanvas (Komponen global) -->
+        @include('partials.modal-auth')
+        @include('partials.offcanvas-cart')
+    </div>
+
+</body>
 </html>
