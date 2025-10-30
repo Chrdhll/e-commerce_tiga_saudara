@@ -7,9 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
+
 
 // Pastikan class 'implements MustVerifyEmail'
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements MustVerifyEmail, FilamentUser
 {
     use HasFactory;
     use Notifiable;
@@ -25,6 +28,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'google_id', // Untuk Google Login
         'phone_number',
+        'email_verified_at',
         'address',
     ];
 
@@ -58,5 +62,17 @@ class User extends Authenticatable implements MustVerifyEmail
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
+    }
+
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        // Cek apakah panel yang diakses adalah 'admin'
+        // dan user memiliki kolom 'is_admin' == true
+        if ($panel->getId() === 'admin') {
+            return $this->is_admin;
+        }
+
+        return false; // Blokir akses ke panel lain (jika ada)
     }
 }
