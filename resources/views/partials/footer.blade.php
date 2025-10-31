@@ -2,7 +2,7 @@
     <div class="container text-white-50">
         <div class="row gy-4 mb-4">
             <div class="col-lg-4 col-md-6">
-                <img src="/images/logo.png" alt="3 Saudara Logo" class="mb-3" style="height: 3rem; filter: brightness(0) invert(1);">
+                <img src="/images/foooter.png" alt="3 Saudara Logo" class="mb-3" style="width: 15rem; height: auto; filter: brightness(0) invert(1);">
                 <p class="mb-3">Menyediakan seafood segar berkualitas tinggi untuk keluarga Indonesia.</p>
                 <div class="d-flex" style="gap: 0.75rem;">
                     <a href="#" class="text-white-50 link-light fs-5"><i class="bi bi-facebook"></i></a>

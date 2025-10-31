@@ -2,9 +2,10 @@
 
 <div class="card h-100 card-product border-0 shadow-sm">
     <div class="position-relative overflow-hidden">
-        {{-- DIUBAH: $product->imageUrl menjadi $product->image --}}
-        {{-- Kita juga akan menggunakan Storage::url() untuk path yang benar --}}
-        <img src="{{ Storage::url($product->image) }}" class="card-img-top" alt="{{ $product->name }}" style="height: 220px; object-fit: cover;">
+        {{-- DIUBAH: Gambar sekarang menjadi link --}}
+        <a href="{{ route('products.show', $product->slug) }}">
+            <img src="{{ Storage::url($product->image) }}" class="card-img-top" alt="{{ $product->name }}" style="height: 220px; object-fit: cover;">
+        </a>
         
         @if($product->discount)
             <span class="badge bg-danger position-absolute top-0 start-0 m-2">
@@ -28,7 +29,13 @@
             <span class="badge rounded-pill text-primary border border-primary mb-2">
                 {{ $product->category->name }}
             </span>
-            <h5 class="card-title h6 mb-2" style="min-height: 3rem;">{{ $product->name }}</h5>
+            
+            {{-- DIUBAH: Nama produk sekarang menjadi link --}}
+            <h5 class="card-title h6 mb-2" style="min-height: 3rem;">
+                <a href="{{ route('products.show', $product->slug) }}" class="text-dark text-decoration-none stretched-link">
+                    {{ $product->name }}
+                </a>
+            </h5>
         </div>
         
         <div class="mt-auto">
@@ -42,7 +49,7 @@
                 <span class="text-muted small">/ {{ $product->unit }}</span>
             </div>
 
-            <form action="#" method="POST"> {{-- Ganti # dengan route('cart.add') --}}
+            <form action="{{ route('cart.add') }}" method="POST" class="position-relative" style="z-index: 2;">
                 @csrf
                 <input type="hidden" name="product_id" value="{{ $product->id }}">
                 <button type="submit" class="btn btn-primary w-100" @disabled($product->stock == 0)>

@@ -3,7 +3,7 @@
         <!-- Logo -->
         <a class="navbar-brand" href="{{ route('home') }}">
             {{-- Pastikan Anda menaruh logo.png di folder `public/images/` --}}
-            <img src="{{ asset('images/logo.png') }}" alt="Tiga Saudara Logo" style="height: 3.5rem;">
+            <img src="{{ asset('images/foooter.png') }}" alt="Tiga Saudara Logo" style="height: 3.5rem;">
         </a>
 
         <!-- Tombol Toggle (Mobile) -->
@@ -34,7 +34,7 @@
             <!-- Aksi (Search, Auth, Cart) -->
             <div class="d-flex align-items-center">
                 <button class="btn btn-link text-dark d-none d-lg-inline-block">
-                    <i class="bi bi-search fs-5"></i>
+                    {{-- <i class="bi bi-search fs-5"></i> --}}
                 </button>
 
                 <!-- Tombol Auth (DINAMIS) -->
@@ -75,14 +75,15 @@
                 @endauth
                 
                 <!-- Tombol Keranjang -->
-                @php
-                    $cartItemsCount = 0; // Ganti dengan logika keranjang Anda
+            @php
+                    $cartItemsCount = \Cart::count(); 
                 @endphp
                 <button class="btn btn-outline-primary ms-2 position-relative" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartDrawer" aria-controls="cartDrawer">
                     <i class="bi bi-cart fs-5"></i>
                     @if($cartItemsCount > 0)
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                             {{ $cartItemsCount }}
+                            <span class="visually-hidden">items in cart</span>
                         </span>
                     @endif
                 </button>
