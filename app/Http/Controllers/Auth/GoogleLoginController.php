@@ -35,19 +35,20 @@ class GoogleLoginController extends Controller
                         ->orWhere('email', $googleUser->getEmail())
                         ->first();
 
+            $loggedInUser = null;
+
             if ($user) {
-                // --- JIKA USER SUDAH ADA ---
 
-                // Jika user ada tapi google_id-nya kosong (mungkin dulu daftar manual)
-                // kita update google_id-nya.
-                $user->update([
-                    'google_id' => $googleUser->getId(),
-                    'email_verified_at' => now(),
-                ]);
+                // Pastikan google_id dan verifikasi email terisi
+                if (is_null($user->google_id)) {
+                    $user->google_id = $googleUser->getId();
+                }
+                if (is_null($user->email_verified_at)) {
+                    $user->email_verified_at = now();
+                }
+                $user->save(); // Simpan perubahan
 
-                // Login-kan user
-                Auth::login($user, true); 
-                return redirect()->intended('/dashboard');
+                $loggedInUser = $user;
 
             } else {
                 // --- JIKA USER BELUM ADA (USER BARU) ---
@@ -61,10 +62,22 @@ class GoogleLoginController extends Controller
                     'password' => Hash::make(Str::random(24)) // Buat password acak (karena wajib ada)
                 ]);
 
-                // Login-kan user baru
-                Auth::login($newUser, true);
+
+                $loggedInUser = $newUser;
+
+            }
+            // 1. Login-kan user-nya
+            Auth::login($loggedInUser, true);
+
+            // 2. Cek rolenya
+            if ($loggedInUser->is_admin == 1) {
+                // JIKA ADMIN, lempar ke dashboard admin
+                return redirect()->route('filament.admin.pages.dashboard');
+            } else {
+                // JIKA BUKAN, lempar ke dashboard pelanggan
                 return redirect()->intended('/dashboard');
             }
+
 
         } catch (\Exception $e) {
             // Jika ada error, kembali ke halaman login

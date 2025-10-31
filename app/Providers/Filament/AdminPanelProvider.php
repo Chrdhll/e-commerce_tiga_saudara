@@ -2,24 +2,30 @@
 
 namespace App\Providers\Filament;
 
-use Filament\Http\Middleware\Authenticate;
-use Filament\Http\Middleware\AuthenticateSession;
-use Filament\Http\Middleware\DisableBladeIconComponents;
-use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages;
 use Filament\Panel;
+use Filament\Widgets;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets;
-use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
-use Illuminate\Routing\Middleware\SubstituteBindings;
+use App\Filament\Widgets\SalesChart;
+use App\Filament\Widgets\StatsOverview; 
+use App\Http\Middleware\AdminMiddleware;
+use App\Filament\Widgets\WeeklySalesChart;
+use Filament\Http\Middleware\Authenticate;
+use App\Filament\Widgets\ProductGrowthChart;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Filament\Http\Middleware\AuthenticateSession;
+use App\Filament\Widgets\BestSellingProductsWidget;
+
+use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
-use App\Filament\Widgets\StatsOverview; 
-use App\Filament\Widgets\SalesChart;
+
+use Filament\Http\Middleware\DisableBladeIconComponents;
+use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 
 
 class AdminPanelProvider extends PanelProvider
@@ -29,8 +35,12 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
+            ->sidebarCollapsibleOnDesktop()
+            ->font('Poppins')
+            ->brandName('TigaSaudara')
             ->path('admin')
             ->spa()
+            ->authGuard('web')
             ->login()
             ->colors([
                 'danger' => Color::Red,
@@ -47,8 +57,10 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                SalesChart::class,
+                WeeklySalesChart::class,
                 StatsOverview::class,
+                ProductGrowthChart::class,  
+            BestSellingProductsWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -60,6 +72,7 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                AdminMiddleware::class
             ])
             ->authMiddleware([
                 Authenticate::class,

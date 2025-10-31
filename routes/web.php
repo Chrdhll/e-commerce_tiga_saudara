@@ -6,6 +6,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Auth\GoogleLoginController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +28,10 @@ Route::get('/kategori', [CategoryController::class, 'index'])->name('categories.
 | Rute-rute ini (dari auth.php) akan menggunakan layouts/guest.blade.php
 */
 require __DIR__.'/auth.php';
+
+Route::post('/admin/logout', [AuthenticatedSessionController::class, 'destroy'])
+         ->middleware('auth')
+         ->name('filament.admin.auth.logout');
 
 Route::get('/auth/google/redirect', [GoogleLoginController::class, 'redirectToGoogle'])
         ->name('google.login');

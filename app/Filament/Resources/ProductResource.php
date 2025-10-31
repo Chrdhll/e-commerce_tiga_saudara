@@ -26,9 +26,14 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-   protected static ?string $navigationIcon = 'heroicon-o-archive-box';
+    protected static ?string $navigationIcon = 'heroicon-o-archive-box';
     protected static ?string $navigationGroup = 'Manajemen Toko';
     protected static ?int $navigationSort = 2;
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with('category');
+    }
 
     public static function form(Form $form): Form
     {
@@ -61,6 +66,7 @@ class ProductResource extends Resource
 
                     TextInput::make('stock')
                         ->required()
+                        ->suffix('kg')
                         ->numeric(),
 
                     // Deskripsi, pakai Rich Text Editor
@@ -97,6 +103,7 @@ class ProductResource extends Resource
                         ->sortable(),
 
                     TextColumn::make('stock')
+                        ->suffix('kg')
                         ->sortable(),
 
                     TextColumn::make('created_at')

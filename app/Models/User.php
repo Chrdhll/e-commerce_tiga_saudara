@@ -29,6 +29,7 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
         'google_id', // Untuk Google Login
         'phone_number',
         'email_verified_at',
+        'is_admin',
         'address',
     ];
 
@@ -52,7 +53,7 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'is_admin' => 'boolean', // Penting untuk membedakan admin
+            'is_admin' => 'boolean',
         ];
     }
 
