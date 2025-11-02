@@ -31,7 +31,7 @@
                     @csrf
                     <div class="mb-3">
                         <label for="login_email" class="form-label">Email</label>
-                        <input type="email" name="email" class="form-control" id="login_email" placeholder="nama@email.com" required :value="old('email')">
+                        <input type="email" name="email" class="form-control" id="login_email" placeholder="nama@email.com" required value="old('email')">
                     </div>
                     <div class="mb-3">
                         <label for="login_password" class="form-label">Password</label>
@@ -52,11 +52,11 @@
                     @csrf
                     <div class="mb-3">
                         <label for="name" class="form-label">Nama Lengkap</label>
-                        <input type="text" name="name" class="form-control" id="name" placeholder="Masukkan nama lengkap" required :value="old('name')">
+                        <input type="text" name="name" class="form-control" id="name" placeholder="Masukkan nama lengkap" required value="old('name')">
                     </div>
                     <div class="mb-3">
                         <label for="register_email" class="form-label">Email</label>
-                        <input type="email" name="email" class="form-control" id="register_email" placeholder="nama@email.com" required :value="old('email')">
+                        <input type="email" name="email" class="form-control" id="register_email" placeholder="nama@email.com" required value="old('email')">
                     </div>
                     <div class="mb-3">
                         <label for="register_password" class="form-label">Password</label>

@@ -37,4 +37,19 @@ class ProductController extends Controller
         
         return view('pages.products', compact('products', 'categories'));
     }
+
+    public function show(Product $product)
+    {
+       
+        $product->load('category');
+
+        // Ambil produk terkait (misal: 4 produk lain dari kategori yang sama)
+        $relatedProducts = Product::where('category_id', $product->category_id)
+                                ->where('id', '!=', $product->id) // Jangan tampilkan produk ini sendiri
+                                ->with('category')
+                                ->take(4)
+                                ->get();
+
+        return view('pages.product-detail', compact('product', 'relatedProducts'));
+    }
 }
