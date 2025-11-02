@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3 Saudara - Fresh. Trust. Simplify.</title>
+    <title>TigaSaudara - @yield('title')</title>
 
     <!-- Alpine.js (Pindahkan ke head agar siap saat modal diklik) -->
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>

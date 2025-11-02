@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Hubungi Kami')
+
 @section('content')
     <section class="bg-gradient-primary-dark text-white py-5">
         <div class="container">

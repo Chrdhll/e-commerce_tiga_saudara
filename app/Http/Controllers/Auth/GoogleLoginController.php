@@ -75,7 +75,7 @@ class GoogleLoginController extends Controller
                 return redirect()->route('filament.admin.pages.dashboard');
             } else {
                 // JIKA BUKAN, lempar ke dashboard pelanggan
-                return redirect()->intended('/dashboard');
+                return redirect()->intended('/');
             }
 
 
