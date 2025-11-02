@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TigaSaudara - @yield('title')</title>
-=======
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
 
@@ -18,11 +17,7 @@
 
 <body class="bg-light">
 
-    {{-- 
-      Inisialisasi Alpine untuk state modal. 
-      x-data akan diwariskan ke semua child element, 
-      termasuk navbar dan modal.
-    --}}
+
     <div x-data="{ mode: 'login' }" @load-cart.window="$store.cart.loadCart()" x-init="$store.cart.loadCart()">
         <!-- Navbar -->
         @include('partials.navbar')

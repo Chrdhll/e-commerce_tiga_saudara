@@ -19,18 +19,20 @@
                     <h1 class="display-5 fw-bold">{{ $product->name }}</h1>
 
                     <div class="mb-3">
-                        @if($product->discount)
-                            <span class="display-6 text-primary">Rp {{ number_format($product->finalPrice, 0, ',', '.') }}</span>
-                            <span class="fs-5 text-muted text-decoration-line-through ms-2">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
+                        @if ($product->discount)
+                            <span class="display-6 text-primary">Rp
+                                {{ number_format($product->finalPrice, 0, ',', '.') }}</span>
+                            <span class="fs-5 text-muted text-decoration-line-through ms-2">Rp
+                                {{ number_format($product->price, 0, ',', '.') }}</span>
                             <span class="badge bg-danger ms-2">-{{ $product->discount }}%</span>
                         @else
                             <span class="display-6 text-primary">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
                         @endif
-                        <span class="fs-5 text-muted">/ {{ $product->unit }}</span>
+                        <span class="fs-5 text-muted">/ Kg</span>
                     </div>
 
                     <div class="mb-3">
-                        @if($product->stock > 0)
+                        @if ($product->stock > 0)
                             <span class="badge bg-success">Stok Tersedia: {{ $product->stock }}</span>
                         @else
                             <span class="badge bg-danger">Stok Habis</span>
@@ -38,42 +40,116 @@
                     </div>
 
                     <h5 class="mt-4">Deskripsi Produk</h5>
-                    <p class="text-muted">{{ $product->description ?? 'Deskripsi produk belum tersedia.' }}</p>
+                    <p class="text-muted">{!! $product->description ?? 'Deskripsi produk belum tersedia.' !!}</p>
 
+                    {{-- GANTI SELURUH BLOK .row.g-2.mt-4 DENGAN INI --}}
                     <div class="row g-2 mt-4">
-                        <div class="col-md-4">
-                            <label for="quantity" class="form-label">Kuantitas</label>
-                            <div class="input-group">
-                                <button class="btn btn-outline-secondary" type="button" @click="quantity = Math.max(1, quantity - 1)" @disabled($product->stock == 0)>-</button>
-                                <input type="number" id="quantity" class="form-control text-center" x-model.number="quantity" min="1" :max="maxStock" @disabled($product->stock == 0)>
-                                <button class="btn btn-outline-secondary" type="button" @click="quantity = Math.min(maxStock, quantity + 1)" @disabled($product->stock == 0)>+</button>
-                            </div>
-                        </div>
-
-                        <div class="col-md-8 d-flex align-items-end">
-                            {{-- DIUBAH: Ganti <form> dengan <button> --}}
-                            <button type="button" class="btn btn-primary btn-lg w-100" 
-                                    @click="$store.cart.addItem({{ $product->id }}, quantity)" 
-                                    @disabled($product->stock == 0)>
-                                <i class="bi bi-cart-plus me-2"></i>
-                                Tambah ke Keranjang
-                            </button>
-                        </div>
-
-                        <div class="col-12">
-                            <form action="{{ route('order.now') }}" method="POST" class="w-100">
-                                @csrf
-                                <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                <input type="hidden" name="quantity" x-model="quantity">
-                                <button type="submit" class="btn btn-secondary btn-lg w-100" @disabled($product->stock == 0)>
-                                    <i class="bi bi-whatsapp me-2"></i>
-                                    Pesan Sekarang
-                                </button>
-                            </form>
-                        </div>
-                        <div class="col-12">
-                            <small class="text-muted text-center d-block">Tombol "Pesan Sekarang" akan langsung membuat pesanan dan mengarahkan Anda ke WhatsApp.</small>
-                        </div>
+                        @auth
+                            {{-- ======== USER SUDAH LOGIN ======== --}}
+                            @if (auth()->user()->is_admin)
+                                {{-- ======== 1. TAMPILAN UNTUK ADMIN ======== --}}
+                                <div class="col-md-4">
+                                    <label for="quantity" class="form-label">Kuantitas</label>
+                                    <div class="input-group">
+                                        <button class="btn btn-outline-secondary" type="button"
+                                            disabled>-</button>
+                                        <input type="number" id="quantity"
+                                            class="form-control text-center" value="1" disabled>
+                                        <button class="btn btn-outline-secondary" type="button"
+                                            disabled>+</button>
+                                        </div>
+                                    </div>
+                                <div class="col-md-8 d-flex align-items-end">
+                                    <button type="button" class="btn btn-secondary btn-lg w-100" disabled
+                                        title="Admin tidak bisa berbelanja">
+                                        <i class="bi bi-person-badge me-2"></i>
+                                        Admin Mode
+                                        </button>
+                                    </div>
+                                <div class="col-12">
+                                    <button type="button" class="btn btn-secondary btn-lg w-100" disabled
+                                        title="Admin tidak bisa berbelanja">
+                                        <i class="bi bi-whatsapp me-2"></i>
+                                        Admin Mode
+                                        </button>
+                                    </div>
+                            @else
+                                {{-- ======== 2. TAMPILAN UNTUK PELANGGAN (NORMAL) ======== --}}
+                                {{-- Ini adalah kode asli-mu --}}
+                                <div class="col-md-4">
+                                    <label for="quantity" class="form-label">Kuantitas</label>
+                                    <div class="input-group">
+                                        <button class="btn btn-outline-secondary" type="button"
+                                            @click="quantity = Math.max(1, quantity - 1)"
+                                            @disabled($product->stock == 0)>-</button>
+                                        <input type="number" id="quantity"
+                                            class="form-control text-center" x-model.number="quantity" min="1"
+                                            :max="maxStock" @disabled($product->stock == 0)>
+                                        <button class="btn btn-outline-secondary" type="button"
+                                            @click="quantity = Math.min(maxStock, quantity + 1)"
+                                            @disabled($product->stock == 0)>+</button>
+                                        </div>
+                                    </div>
+                                <div class="col-md-8 d-flex align-items-end">
+                                    <button type="button" class="btn btn-primary btn-lg w-100"
+                                        @click="$store.cart.addItem({{ $product->id }}, quantity)"
+                                        @disabled($product->stock == 0)>
+                                        <i class="bi bi-cart-plus me-2"></i>
+                                        Tambah ke Keranjang
+                                        </button>
+                                    </div>
+                                <div class="col-12">
+                                    <form action="{{ route('order.now') }}" method="POST" class="w-100">
+                                        @csrf
+                                        <input type="hidden" name="product_id"
+                                            value="{{ $product->id }}">
+                                        <input type="hidden" name="quantity" x-model="quantity">
+                                        <button type="submit" class="btn btn-secondary btn-lg w-100"
+                                            @disabled($product->stock == 0)>
+                                            <i class="bi bi-whatsapp me-2"></i>
+                                            Pesan Sekarang
+                                            </button>
+                                        </form>
+                                    </div>
+                                <div class="col-12">
+                                    <small class="text-muted text-center d-block">Tombol "Pesan Sekarang" akan
+                                        langsung membuat pesanan dan mengarahkan Anda ke WhatsApp.</small>
+                                    </div>
+                            @endif
+                        @else
+                            {{-- ======== 3. TAMPILAN UNTUK GUEST (BELUM LOGIN) ======== --}}
+                            <div class="col-md-4">
+                                <label for="quantity" class="form-label">Kuantitas</label>
+                                <div class="input-group">
+                                    <button class="btn btn-outline-secondary" type="button" disabled>-</button>
+                                    <input type="number" id="quantity" class="form-control text-center"
+                                        value="1" disabled>
+                                    <button class="btn btn-outline-secondary" type="button" disabled>+</button>
+                                    </div>
+                                </div>
+                            <div class="col-md-8 d-flex align-items-end">
+                                {{-- Tombol Add to Cart diganti jadi tombol Login --}}
+                                <button type="button" class="btn btn-primary btn-lg w-100"
+                                    {{-- Ganti 'authModal' dengan ID modal-mu --}}
+                                    onclick="new bootstrap.Modal(document.getElementById('authModal')).show()">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i>
+                                    Login untuk Membeli
+                                    </button>
+                                </div>
+                            <div class="col-12">
+                                {{-- Tombol Pesan Sekarang diganti jadi tombol Login --}}
+                                <button type="button" class="btn btn-secondary btn-lg w-100"
+                                    {{-- Ganti 'authModal' dengan ID modal-mu --}}
+                                    onclick="new bootstrap.Modal(document.getElementById('authModal')).show()">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i>
+                                    Login untuk Pesan
+                                    </button>
+                                </div>
+                            <div class="col-12">
+                                <small class="text-muted text-center d-block">Anda harus login untuk menambah ke
+                                    keranjang atau memesan.</small>
+                                </div>
+                        @endauth
                     </div>
 
                 </div>
@@ -81,18 +157,18 @@
         </div>
     </section>
 
-    @if($relatedProducts->count() > 0)
-    <section class="py-5 bg-light">
-        <div class="container">
-            <h2 class="mb-4 text-primary">Produk Terkait</h2>
-            <div class="row g-4">
-                @foreach($relatedProducts as $relatedProduct)
-                    <div class="col-md-6 col-lg-3">
-                        <x-product-card :product="$relatedProduct" />
-                    </div>
-                @endforeach
+    @if ($relatedProducts->count() > 0)
+        <section class="py-5 bg-light">
+            <div class="container">
+                <h2 class="mb-4 text-primary">Produk Terkait</h2>
+                <div class="row g-4">
+                    @foreach ($relatedProducts as $relatedProduct)
+                        <div class="col-md-6 col-lg-3">
+                            <x-product-card :product="$relatedProduct" />
+                        </div>
+                    @endforeach
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
     @endif
 @endsection

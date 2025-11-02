@@ -9,124 +9,31 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Gloudemans\Shoppingcart\Facades\Cart; // <-- Import Cart facade
+use Gloudemans\Shoppingcart\Facades\Cart;
+use App\Models\Setting;
+use Illuminate\Support\Facades\Cache;
 
 class CartController extends Controller
 {
-    /**
-     * Menambahkan produk ke keranjang.
-     */
-    private function getCartResponse(): JsonResponse
+    
+
+    private function getWhatsappNumber()
     {
-        $cartItems = Cart::content();
-
-        // Ambil data gambar terbaru dari database
-        $productIds = $cartItems->pluck('id');
-        $productImages = Product::whereIn('id', $productIds)->pluck('image', 'id');
-
-        $items = $cartItems->map(function ($item) use ($productImages) {
-
-            $imageUrl = 'https://via.placeholder.com/80'; // Gambar default
-
-            // Cek jika ID produk ada di hasil query kita
-            if (isset($productImages[$item->id]) && !empty($productImages[$item->id])) {
-
-                // $productImages[$item->id] berisi: "product-images/FILE.jpg"
-                // Storage::url() akan mengubahnya menjadi: "/storage/product-images/FILE.jpg"
-
-                // KITA HAPUS PENGECEKAN 'exists()' DAN LANGSUNG BUAT URL
-                $imageUrl = Storage::url($productImages[$item->id]);
-            }
-
-            $item->options->image_url = $imageUrl;
-            return $item;
+        return Cache::rememberForever('setting.whatsapp_number', function () {
+            // Jika tidak ada di cache, ambil dari DB
+            // Jika tidak ada di DB, pakai nomor fallback
+            return Setting::where('key', 'whatsapp_number')->first()?->value ?? '62831822246';
         });
-
-        return response()->json([
-            'items' => $items->keyBy('rowId'),
-            'count' => Cart::count(),
-            'subtotal' => 'Rp ' . Cart::subtotal(0, ',', '.'),
-        ]);
-    }
-
-    /**
-     * Mengambil konten keranjang saat ini.
-     */
-    public function content(): JsonResponse
-    {
-        return $this->getCartResponse();
-    }
-
-    /**
-     * Menambahkan produk ke keranjang.
-     */
-    public function add(Request $request): JsonResponse
-    {
-        $product = Product::findOrFail($request->product_id);
-        $quantity = $request->quantity ?? 1;
-
-        if ($product->stock < $quantity) {
-            return response()->json(['message' => 'Stok tidak mencukupi!'], 422);
-        }
-
-        Cart::add(
-            $product->id,
-            $product->name,
-            $quantity,
-            $product->finalPrice,
-            [
-                // HAPUS 'image' dari sini agar tidak menyimpan data basi
-                // 'image' => $product->image, // <--- HAPUS BARIS INI
-                'unit' => $product->unit,
-                'stock' => $product->stock
-            ]
-        );
-
-        return $this->getCartResponse();
-    }
-
-    /**
-     * Memperbarui kuantitas item di keranjang.
-     */
-    public function update(Request $request, $rowId): JsonResponse
-    {
-        $item = Cart::get($rowId);
-        $stock = $item->options->stock ?? 0;
-
-        if ($request->action == 'increase') {
-            if ($item->qty + 1 > $stock) {
-                return response()->json(['message' => 'Stok tidak mencukupi!'], 422);
-            }
-            Cart::update($rowId, $item->qty + 1);
-        } elseif ($request->action == 'decrease') {
-            Cart::update($rowId, $item->qty - 1);
-        }
-
-        return $this->getCartResponse();
-    }
-
-    /**
-     * Menghapus item dari keranjang.
-     */
-    public function remove($rowId): JsonResponse
-    {
-        Cart::remove($rowId);
-        return $this->getCartResponse();
-    }
-
-    /**
-     * Menghapus semua item dari keranjang.
-     */
-    public function clear(): JsonResponse
-    {
-        Cart::destroy();
-        return $this->getCartResponse();
     }
 
     public function checkout(Request $request)
     {
         $cartItems = Cart::content();
         $user = Auth::user();
+
+        if ($user->is_admin) {
+            return redirect()->back()->with('error', 'Admin tidak diizinkan untuk melakukan checkout.');
+        }
 
         if ($cartItems->isEmpty()) {
             return redirect()->route('products.index')->with('error', 'Keranjang Anda kosong.');
@@ -189,8 +96,12 @@ class CartController extends Controller
             DB::commit();
 
             // 4. Redirect ke WhatsApp
-            $waNumber = "6281234567890"; // GANTI DENGAN NOMOR WA ANDA
+
+            $waNumber = $this->getWhatsappNumber();
+
+
             $waLink = "https://wa.me/{$waNumber}?text=" . urlencode($waMessage);
+
 
             // Kirim event untuk me-refresh keranjang di frontend
             // (Meskipun redirect, ini best practice jika user menekan "back")
@@ -205,6 +116,10 @@ class CartController extends Controller
     public function orderNow(Request $request)
     {
         $user = Auth::user();
+
+        if ($user->is_admin) {
+            return redirect()->back()->with('error', 'Admin tidak diizinkan untuk melakukan checkout.');
+        }
 
         // 1. Validasi Input dari form
         $request->validate([
@@ -271,13 +186,146 @@ class CartController extends Controller
             $waMessage .= "Mohon info untuk total dan rekening pembayarannya. Terima kasih.";
 
             // 8. Redirect ke WhatsApp
-            $waNumber = "6283189865216";
+
+            $waNumber = $this->getWhatsappNumber();
+
+
             $waLink = "https://wa.me/{$waNumber}?text=" . urlencode($waMessage);
+
 
             return redirect()->away($waLink);
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
+    }
+
+    private function getCartResponse(): JsonResponse
+    {
+        $cartItems = Cart::content();
+
+        // Ambil data gambar terbaru dari database
+        $productIds = $cartItems->pluck('id');
+        $productImages = Product::whereIn('id', $productIds)->pluck('image', 'id');
+
+        $items = $cartItems->map(function ($item) use ($productImages) {
+
+            $imageUrl = 'https://via.placeholder.com/80'; // Gambar default
+
+            // Cek jika ID produk ada di hasil query kita
+            if (isset($productImages[$item->id]) && !empty($productImages[$item->id])) {
+
+                // $productImages[$item->id] berisi: "product-images/FILE.jpg"
+                // Storage::url() akan mengubahnya menjadi: "/storage/product-images/FILE.jpg"
+
+                // KITA HAPUS PENGECEKAN 'exists()' DAN LANGSUNG BUAT URL
+                $imageUrl = Storage::url($productImages[$item->id]);
+            }
+
+
+            $item->options->put('image_url', $imageUrl);
+
+            return $item;
+        });
+
+        return response()->json([
+            'items' => $items->keyBy('rowId'),
+            'count' => Cart::count(),
+            'subtotal' => 'Rp ' . Cart::subtotal(0, ',', '.'),
+        ]);
+    }
+
+    /**
+     * Mengambil konten keranjang saat ini.
+     */
+    public function content(): JsonResponse
+    {
+        return $this->getCartResponse();
+    }
+
+    /**
+     * Menambahkan produk ke keranjang.
+     */
+    public function add(Request $request): JsonResponse
+    {
+        if (Auth::check() && Auth::user()->is_admin) {
+            // Kirim respon JSON 'Forbidden' (Dilarang)
+            return response()->json(['message' => 'Admin tidak diizinkan untuk mengelola keranjang.'], 403);
+        }
+
+        $product = Product::findOrFail($request->product_id);
+        $quantity = $request->quantity ?? 1;
+
+        if ($product->stock < $quantity) {
+            return response()->json(['message' => 'Stok tidak mencukupi!'], 422);
+        }
+
+        Cart::add(
+            $product->id,
+            $product->name,
+            $quantity,
+            $product->finalPrice,
+            [
+                // HAPUS 'image' dari sini agar tidak menyimpan data basi
+                // 'image' => $product->image, // <--- HAPUS BARIS INI
+                'unit' => $product->unit,
+                'stock' => $product->stock
+            ]
+        );
+
+        return $this->getCartResponse();
+    }
+
+    /**
+     * Memperbarui kuantitas item di keranjang.
+     */
+    public function update(Request $request, $rowId): JsonResponse
+    {
+        if (Auth::check() && Auth::user()->is_admin) {
+            // Kirim respon JSON 'Forbidden' (Dilarang)
+            return response()->json(['message' => 'Admin tidak diizinkan untuk mengelola keranjang.'], 403);
+        }
+
+        $item = Cart::get($rowId);
+        $stock = $item->options->stock ?? 0;
+
+        if ($request->action == 'increase') {
+            if ($item->qty + 1 > $stock) {
+                return response()->json(['message' => 'Stok tidak mencukupi!'], 422);
+            }
+            Cart::update($rowId, $item->qty + 1);
+        } elseif ($request->action == 'decrease') {
+            Cart::update($rowId, $item->qty - 1);
+        }
+
+        return $this->getCartResponse();
+    }
+
+    /**
+     * Menghapus item dari keranjang.
+     */
+    public function remove($rowId): JsonResponse
+    {
+        if (Auth::check() && Auth::user()->is_admin) {
+            // Kirim respon JSON 'Forbidden' (Dilarang)
+            return response()->json(['message' => 'Admin tidak diizinkan untuk mengelola keranjang.'], 403);
+        }
+
+        Cart::remove($rowId);
+        return $this->getCartResponse();
+    }
+
+    /**
+     * Menghapus semua item dari keranjang.
+     */
+    public function clear(): JsonResponse
+    {
+        if (Auth::check() && Auth::user()->is_admin) {
+            // Kirim respon JSON 'Forbidden' (Dilarang)
+            return response()->json(['message' => 'Admin tidak diizinkan untuk mengelola keranjang.'], 403);
+        }
+
+        Cart::destroy();
+        return $this->getCartResponse();
     }
 }

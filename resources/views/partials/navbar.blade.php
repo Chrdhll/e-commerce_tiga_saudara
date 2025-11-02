@@ -47,7 +47,7 @@
                 @guest
                     <!-- Jika User Tamu (Belum Login) -->
                     <div class="d-none d-lg-flex align-items-center" style="gap: 0.5rem;">
-                        <button class="btn btn-link text-primary" data-bs-toggle="modal" data-bs-target="#authModal"
+                        <button class="btn text-primary" data-bs-toggle="modal" data-bs-target="#authModal"
                             @click="mode = 'login'">
                             Masuk
                         </button>
@@ -63,7 +63,8 @@
                     <div class="d-none d-lg-flex align-items-center">
                         <div class="dropdown">
                             <button class="btn btn-link text-dark dropdown-toggle" type="button" id="userMenu"
-                                data-bs-toggle="dropdown" aria-expanded="false">
+                                data-bs-toggle="dropdown" aria-expanded="false"
+                                style="text-decoration: none;">
                                 <i class="bi bi-person-circle fs-5 me-1 text-primary"></i>
                                 {{ Auth::user()->name }}
                             </button>

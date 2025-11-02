@@ -52,18 +52,18 @@ class OrderResource extends Resource
                     // Hanya tampilkan field yang boleh diedit
                     Select::make('status')
                         ->options([
-                            'pending' => 'Pending',
-                            'processing' => 'Processing',
-                            'shipped' => 'Shipped',
-                            'completed' => 'Completed',
-                            'cancelled' => 'Cancelled',
+                            'pending' => 'Menunggu',
+                            'processing' => 'Diproses',
+                            'shipped' => 'Dikirim',
+                            'completed' => 'Selesai',
+                            'cancelled' => 'Dibatalkan',
                         ])
                         ->required(),
 
                     Select::make('payment_status')
                         ->options([
-                            'unpaid' => 'Unpaid',
-                            'paid' => 'Paid',
+                            'unpaid' => 'Belum Dibayar',
+                            'paid' => 'Sudah Dibayar',
                         ])
                         ->required(),
 
@@ -94,34 +94,36 @@ class OrderResource extends Resource
 
                     SelectColumn::make('status')
                         ->options([
-                            'pending' => 'Pending',
-                            'processing' => 'Processing',
-                            'shipped' => 'Shipped',
-                            'completed' => 'Completed',
-                            'cancelled' => 'Cancelled',
+                            'pending' => 'Menunggu',
+                            'processing' => 'Diproses',
+                            'shipped' => 'Dikirim',
+                            'completed' => 'Selesai',
+                            'cancelled' => 'Dibatalkan',
                         ])
                         ->sortable(),
 
                     SelectColumn::make('payment_status')
+                        ->label('Status Bayar')
                         ->options([
-                            'unpaid' => 'Unpaid',
-                            'paid' => 'Paid',
+                            'unpaid' => 'Belum Dibayar',
+                            'paid' => 'Sudah Dibayar',
                         ])
                         ->sortable(),
 
                     TextColumn::make('created_at')
-                        ->dateTime()
-                        ->sortable(),
+                    ->label('Tgl. Pesan') 
+                    ->dateTime()
+                    ->sortable(),
                 ])
                 ->filters([
                     // Filter berdasarkan status
                     SelectFilter::make('status')
                         ->options([
-                            'pending' => 'Pending',
-                            'processing' => 'Processing',
-                            'shipped' => 'Shipped',
-                            'completed' => 'Completed',
-                            'cancelled' => 'Cancelled',
+                            'pending' => 'Menunggu',
+                            'processing' => 'Diproses',
+                            'shipped' => 'Dikirim',
+                            'completed' => 'Selesai',
+                            'cancelled' => 'Dibatalkan',
                         ]),
                 ])
                 ->actions([

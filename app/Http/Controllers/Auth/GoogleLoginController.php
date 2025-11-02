@@ -59,7 +59,7 @@ class GoogleLoginController extends Controller
                     'email' => $googleUser->getEmail(),
                     'google_id' => $googleUser->getId(),
                     'email_verified_at' => now(), // Anggap terverifikasi karena dari Google
-                    'password' => Hash::make(Str::random(24)) // Buat password acak (karena wajib ada)
+                    'password' => null
                 ]);
 
 

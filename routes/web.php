@@ -67,10 +67,25 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
-Route::post('/cart/update/{rowId}', [CartController::class, 'update'])->name('cart.update');
-Route::get('/cart/remove/{rowId}', [CartController::class, 'remove'])->name('cart.remove'); // Gunakan GET untuk link sederhana
-Route::get('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+
+Route::middleware(['auth'])->prefix('cart')->group(function () {
+
+    Route::post('/add', [CartController::class, 'add'])->name('cart.add');
+
+    Route::post('/update/{rowId}', [CartController::class, 'update'])->name('cart.update');
+    Route::get('/remove/{rowId}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::get('/clear', [CartController::class, 'clear'])->name('cart.clear');
+});
+
 Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout')->middleware('auth');
 Route::post('/order/now', [CartController::class, 'orderNow'])->name('order.now')->middleware('auth');
 Route::get('/cart/content', [CartController::class, 'content'])->name('cart.content');
+
+
+Route::get('/tes-toast', function () {
+
+    // Perintah ini akan redirect balik ke '/'
+    // sambil membawa 'flash session' bernama 'success'
+    return redirect('/')->with('success', 'Ini adalah pesan tes toast global!');
+
+});

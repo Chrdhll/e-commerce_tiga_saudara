@@ -1,20 +1,30 @@
 <div class="card-header bg-white py-3">
-    <h5 class="mb-0 text-primary">Perbarui Password</h5>
-    <p class="small text-muted mb-0">Pastikan akun Anda menggunakan password yang panjang dan acak.</p>
+    {{-- LOGIKA 1: Ganti Judul & Deskripsi --}}
+    @if (auth()->user()->password === null)
+        <h5 class="mb-0 text-primary">Buat Password</h5>
+        <p class="small text-muted mb-0">Akun Anda hanya menggunakan Google Login. Buat password untuk bisa login manual.</p>
+    @else
+        <h5 class="mb-0 text-primary">Perbarui Password</h5>
+        <p class="small text-muted mb-0">Pastikan akun Anda menggunakan password yang panjang dan acak.</p>
+    @endif
 </div>
 <div class="card-body p-4">
     <form method="POST" action="{{ route('password.update') }}">
         @csrf
         @method('put')
 
-        <div class="mb-3">
-            <label for="current_password" class="form-label">Password Saat Ini</label>
-            <input id="current_password" name="current_password" type="password" class="form-control @error('current_password', 'updatePassword') is-invalid @enderror" required>
-            @error('current_password', 'updatePassword')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-        </div>
+        {{-- LOGIKA 2: Sembunyikan field ini jika password user NULL --}}
+        @if (auth()->user()->password !== null)
+            <div class="mb-3">
+                <label for="current_password" class="form-label">Password Saat Ini</label>
+                <input id="current_password" name="current_password" type="password" class="form-control @error('current_password', 'updatePassword') is-invalid @enderror" required>
+                @error('current_password', 'updatePassword')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+        @endif
 
+        {{-- Field ini selalu tampil --}}
         <div class="mb-3">
             <label for="password" class="form-label">Password Baru</label>
             <input id="password" name="password" type="password" class="form-control @error('password', 'updatePassword') is-invalid @enderror" required>
@@ -23,6 +33,7 @@
             @enderror
         </div>
 
+        {{-- Field ini selalu tampil --}}
         <div class="mb-3">
             <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
             <input id="password_confirmation" name="password_confirmation" type="password" class="form-control @error('password_confirmation', 'updatePassword') is-invalid @enderror" required>
