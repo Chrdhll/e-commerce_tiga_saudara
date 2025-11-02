@@ -2,7 +2,6 @@
 
 namespace App\Filament\Widgets;
 
-use Illuminate\Support\Facades\Cache;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\Product;
@@ -29,70 +28,52 @@ class StatsOverview extends BaseWidget
     protected function getStats(): array
     {
         // Tentukan tanggal
-        $stats = Cache::remember('stats_overview', now()->addMinutes(10), function () {
-            $now = Carbon::now();
-            $startOfCurrentMonth = $now->copy()->startOfMonth();
-            $startOfPreviousMonth = $now->copy()->subMonth()->startOfMonth();
-            $endOfPreviousMonth = $startOfPreviousMonth->copy()->endOfMonth();
+        $now = Carbon::now();
+        $startOfCurrentMonth = $now->copy()->startOfMonth();
+        $startOfPreviousMonth = $now->copy()->subMonth()->startOfMonth();
+        $endOfPreviousMonth = $startOfPreviousMonth->copy()->endOfMonth();
 
-            // 1. Total Produk
-            $totalProducts = Product::count();
-            $productsLastMonth = Product::where('created_at', '<=', $endOfPreviousMonth)->count();
-            $productsChange = $this->calculatePercentageChange($totalProducts, $productsLastMonth); // Ini perbandingan total, bukan bulanan
+        // 1. Total Produk
+        $totalProducts = Product::count();
+        $productsLastMonth = Product::where('created_at', '<=', $endOfPreviousMonth)->count();
+        $productsChange = $this->calculatePercentageChange($totalProducts, $productsLastMonth); // Ini perbandingan total, bukan bulanan
 
-            // 2. Total Kategori
-            $totalCategories = Category::count();
-            $categoriesLastMonth = Category::where('created_at', '<=', $endOfPreviousMonth)->count();
-            $categoriesChange = $this->calculatePercentageChange($totalCategories, $categoriesLastMonth);
+        // 2. Total Kategori
+        $totalCategories = Category::count();
+        $categoriesLastMonth = Category::where('created_at', '<=', $endOfPreviousMonth)->count();
+        $categoriesChange = $this->calculatePercentageChange($totalCategories, $categoriesLastMonth);
 
-            // 3. Total Pengguna (Pelanggan)
-            $totalUsers = User::where('is_admin', false)->count();
-            $usersLastMonth = User::where('is_admin', false)->where('created_at', '<=', $endOfPreviousMonth)->count();
-            $usersChange = $this->calculatePercentageChange($totalUsers, $usersLastMonth);
+        // 3. Total Pengguna (Pelanggan)
+        $totalUsers = User::where('is_admin', false)->count();
+        $usersLastMonth = User::where('is_admin', false)->where('created_at', '<=', $endOfPreviousMonth)->count();
+        $usersChange = $this->calculatePercentageChange($totalUsers, $usersLastMonth);
 
-            // 4. Pesanan Bulan Ini
-            $ordersThisMonth = Order::where('created_at', '>=', $startOfCurrentMonth)->count();
-            $ordersLastMonth = Order::whereBetween('created_at', [$startOfPreviousMonth, $endOfPreviousMonth])->count();
-            $ordersChange = $this->calculatePercentageChange($ordersThisMonth, $ordersLastMonth);
-            $ordersChangeDescription = 'vs bulan lalu';
-
-
-            return [
-                            'totalProducts' => $totalProducts,
-                            'productsChange' => $productsChange,
-                            'totalCategories' => $totalCategories,
-                            'categoriesChange' => $categoriesChange,
-                            'totalUsers' => $totalUsers,
-                            'usersChange' => $usersChange,
-                            'ordersThisMonth' => $ordersThisMonth,
-                            'ordersChange' => $ordersChange,
-                            'ordersChangeDescription' => 'vs bulan lalu',
-                        ];
-
-        });
-
+        // 4. Pesanan Bulan Ini
+        $ordersThisMonth = Order::where('created_at', '>=', $startOfCurrentMonth)->count();
+        $ordersLastMonth = Order::whereBetween('created_at', [$startOfPreviousMonth, $endOfPreviousMonth])->count();
+        $ordersChange = $this->calculatePercentageChange($ordersThisMonth, $ordersLastMonth);
+        $ordersChangeDescription = 'vs bulan lalu';
 
         return [
-                    Stat::make('Total Produk', $stats['totalProducts'])
-                        ->description(number_format($stats['productsChange'], 2) . '% vs total sebelumnya')
-                        ->descriptionIcon($stats['productsChange'] >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
-                        ->color('primary'),
+            Stat::make('Total Produk', $totalProducts)
+                ->description(number_format($productsChange, 2) . '% vs total sebelumnya') // Gambar agak ambigu, kita pakai perbandingan total
+                ->descriptionIcon($productsChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
+                ->color('primary'),
 
-                    Stat::make('Total Kategori', $stats['totalCategories'])
-                        ->description(number_format($stats['categoriesChange'], 2) . '% vs total sebelumnya')
-                        ->descriptionIcon($stats['categoriesChange'] >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
-                        ->color('warning'),
+            Stat::make('Total Kategori', $totalCategories)
+                ->description(number_format($categoriesChange, 2) . '% vs total sebelumnya')
+                ->descriptionIcon($categoriesChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
+                ->color('warning'),
 
-                    Stat::make('Total Pengguna', $stats['totalUsers'])
-                        ->description(number_format($stats['usersChange'], 2) . '% vs total sebelumnya')
-                        ->descriptionIcon($stats['usersChange'] >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
-                        ->color('danger'),
+            Stat::make('Total Pengguna', $totalUsers)
+                ->description(number_format($usersChange, 2) . '% vs total sebelumnya')
+                ->descriptionIcon($usersChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
+                ->color('danger'),
 
-                    Stat::make('Pesanan Bulan Ini', $stats['ordersThisMonth'])
-                        ->description(number_format($stats['ordersChange'], 2) . '% ' . $stats['ordersChangeDescription'])
-                        ->descriptionIcon($stats['ordersChange'] >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
-                        ->color('success'),
-                ];
-
+            Stat::make('Pesanan Bulan Ini', $ordersThisMonth)
+                ->description(number_format($ordersChange, 2) . '% ' . $ordersChangeDescription)
+                ->descriptionIcon($ordersChange >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
+                ->color('success'),
+        ];
     }
 }

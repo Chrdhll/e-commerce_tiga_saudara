@@ -4,8 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TigaSaudara - @yield('title')</title>
+=======
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>3 Saudara - Fresh. Trust. Simplify.</title>
+
 
     <!-- Alpine.js (Pindahkan ke head agar siap saat modal diklik) -->
     {{-- <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script> --}}
