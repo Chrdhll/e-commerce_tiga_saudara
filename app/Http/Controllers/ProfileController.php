@@ -14,10 +14,18 @@ class ProfileController extends Controller
     /**
      * Display the user's profile form.
      */
-    public function edit(Request $request): View
+     public function edit(Request $request): View
     {
+        // Ambil data order milik user, urutkan dari terbaru
+        // PENTING: Eager load relasi 'items' dan 'items.product'
+        $orders = $request->user()->orders()
+                                ->with('items.product') // Ambil juga item & info produknya
+                                ->latest()
+                                ->paginate(5); // Batasi 5 per halaman
+
         return view('profile.edit', [
             'user' => $request->user(),
+            // 'orders' => $orders, // Kirim data order ke view
         ]);
     }
 

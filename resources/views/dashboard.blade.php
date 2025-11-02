@@ -1,17 +1,48 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
+@extends('layouts.app')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    {{ __("You're logged in!") }}
+@section('content')
+    <section class="bg-gradient-primary-dark text-white py-5">
+        <div class="container">
+            <h1 class="display-4">Dashboard</h1>
+            <p class="fs-5 text-white-50">
+                Selamat datang kembali, {{ Auth::user()->name }}!
+            </p>
+        </div>
+    </section>
+
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-4 justify-content-center">
+                
+                <div class="col-lg-10">
+                    <div classs="card border-0 shadow-sm">
+                        {{-- 
+                        Kita panggil partial yang sama dari halaman profil,
+                        tapi sekarang menggunakan variabel $orders dari rute dashboard
+                        --}}
+                        @include('profile.partials.order-history', ['orders' => $orders])
+                    </div>
                 </div>
+
+                <div class="col-lg-10">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="mb-0 text-primary">Navigasi Cepat</h5>
+                        </div>
+                        <div class="card-body p-4 d-flex flex-wrap gap-3">
+                            <a href="{{ route('profile.edit') }}" class="btn btn-outline-primary">
+                                <i class="bi bi-person-fill me-2"></i>
+                                Edit Profil
+                            </a>
+                            <a href="{{ route('products.index') }}" class="btn btn-primary">
+                                <i class="bi bi-shop me-2"></i>
+                                Lanjut Belanja
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
-    </div>
-</x-app-layout>
+    </section>
+@endsection

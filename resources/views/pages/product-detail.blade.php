@@ -2,7 +2,8 @@
 
 @section('content')
     <section class="py-5 bg-white">
-        <div class="container">
+        {{-- Gunakan Alpine.js untuk melacak kuantitas --}}
+        <div class="container" x-data="{ quantity: 1, maxStock: {{ $product->stock }} }">
             <div class="row g-5">
                 <div class="col-lg-6">
                     <div class="border rounded-4 shadow-sm p-3">
@@ -39,23 +40,42 @@
                     <h5 class="mt-4">Deskripsi Produk</h5>
                     <p class="text-muted">{{ $product->description ?? 'Deskripsi produk belum tersedia.' }}</p>
 
-                    <form action="{{ route('cart.add') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="product_id" value="{{ $product->id }}">
-                        
-                        <div class="row g-2">
-                            <div class="col-md-3">
-                                <label for="quantity" class="form-label">Kuantitas</label>
-                                <input type="number" name="quantity" class="form-control" value="1" min="1" max="{{ $product->stock }}" @disabled($product->stock == 0)>
-                            </div>
-                            <div class="col-md-9 d-flex align-items-end">
-                                <button type="submit" class="btn btn-primary btn-lg w-100" @disabled($product->stock == 0)>
-                                    <i class="bi bi-cart-plus me-2"></i>
-                                    {{ $product->stock == 0 ? 'Stok Habis' : 'Tambah ke Keranjang' }}
-                                </button>
+                    <div class="row g-2 mt-4">
+                        <div class="col-md-4">
+                            <label for="quantity" class="form-label">Kuantitas</label>
+                            <div class="input-group">
+                                <button class="btn btn-outline-secondary" type="button" @click="quantity = Math.max(1, quantity - 1)" @disabled($product->stock == 0)>-</button>
+                                <input type="number" id="quantity" class="form-control text-center" x-model.number="quantity" min="1" :max="maxStock" @disabled($product->stock == 0)>
+                                <button class="btn btn-outline-secondary" type="button" @click="quantity = Math.min(maxStock, quantity + 1)" @disabled($product->stock == 0)>+</button>
                             </div>
                         </div>
-                    </form>
+
+                        <div class="col-md-8 d-flex align-items-end">
+                            {{-- DIUBAH: Ganti <form> dengan <button> --}}
+                            <button type="button" class="btn btn-primary btn-lg w-100" 
+                                    @click="$store.cart.addItem({{ $product->id }}, quantity)" 
+                                    @disabled($product->stock == 0)>
+                                <i class="bi bi-cart-plus me-2"></i>
+                                Tambah ke Keranjang
+                            </button>
+                        </div>
+
+                        <div class="col-12">
+                            <form action="{{ route('order.now') }}" method="POST" class="w-100">
+                                @csrf
+                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                <input type="hidden" name="quantity" x-model="quantity">
+                                <button type="submit" class="btn btn-secondary btn-lg w-100" @disabled($product->stock == 0)>
+                                    <i class="bi bi-whatsapp me-2"></i>
+                                    Pesan Sekarang
+                                </button>
+                            </form>
+                        </div>
+                        <div class="col-12">
+                            <small class="text-muted text-center d-block">Tombol "Pesan Sekarang" akan langsung membuat pesanan dan mengarahkan Anda ke WhatsApp.</small>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>

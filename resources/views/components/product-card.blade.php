@@ -19,9 +19,9 @@
             </span>
         @endif
 
-        <button class="btn btn-light btn-sm position-absolute top-0 end-0 m-2 rounded-circle" style="width: 32px; height: 32px;">
+        {{-- <button class="btn btn-light btn-sm position-absolute top-0 end-0 m-2 rounded-circle" style="width: 32px; height: 32px;">
             <i class="bi bi-heart text-muted"></i>
-        </button>
+        </button> --}}
     </div>
     
     <div class="card-body p-4 d-flex flex-column">
@@ -49,14 +49,15 @@
                 <span class="text-muted small">/ {{ $product->unit }}</span>
             </div>
 
-            <form action="{{ route('cart.add') }}" method="POST" class="position-relative" style="z-index: 2;">
-                @csrf
-                <input type="hidden" name="product_id" value="{{ $product->id }}">
-                <button type="submit" class="btn btn-primary w-100" @disabled($product->stock == 0)>
+           <div class="position-relative" style="z-index: 2;">
+                <button type="button" 
+                        class="btn btn-primary w-100" 
+                        @click="$store.cart.addItem({{ $product->id }})"
+                        @disabled($product->stock == 0)>
                     <i class="bi bi-cart-plus me-2"></i>
                     {{ $product->stock == 0 ? 'Stok Habis' : 'Tambah ke Keranjang' }}
                 </button>
-            </form>
+            </div>
         </div>
     </div>
 </div>

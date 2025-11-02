@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\PageController;
@@ -52,7 +53,13 @@ Route::middleware('auth')->group(function () {
         // if (auth()->user()->isAdmin()) {
         //     return redirect('/admin');
         // }
-        return view('dashboard');
+        $orders = Auth::user()->orders()
+                            ->with('items.product') // Ambil juga item & info produknya
+                            ->latest()
+                            ->paginate(10); // Tampilkan 10 pesanan per halaman
+
+        // Kirim data $orders ke view 'dashboard'
+        return view('dashboard', compact('orders'));
     })->middleware(['verified'])->name('dashboard');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -64,3 +71,6 @@ Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::post('/cart/update/{rowId}', [CartController::class, 'update'])->name('cart.update');
 Route::get('/cart/remove/{rowId}', [CartController::class, 'remove'])->name('cart.remove'); // Gunakan GET untuk link sederhana
 Route::get('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout')->middleware('auth');
+Route::post('/order/now', [CartController::class, 'orderNow'])->name('order.now')->middleware('auth');
+Route::get('/cart/content', [CartController::class, 'content'])->name('cart.content');
