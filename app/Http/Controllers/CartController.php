@@ -15,14 +15,14 @@ use Illuminate\Support\Facades\Cache;
 
 class CartController extends Controller
 {
-    
+
 
     private function getWhatsappNumber()
     {
         return Cache::rememberForever('setting.whatsapp_number', function () {
             // Jika tidak ada di cache, ambil dari DB
             // Jika tidak ada di DB, pakai nomor fallback
-            return Setting::where('key', 'whatsapp_number')->first()?->value ?? '62831822246';
+            return Setting::where('key', 'whatsapp_number')->first()?->value ?? '6283189865216';
         });
     }
 

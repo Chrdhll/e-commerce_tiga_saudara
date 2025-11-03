@@ -11,6 +11,7 @@ class ProductController extends Controller
     {
         $productsQuery = Product::query();
         $categories = Category::all();
+        $selectedCategory = null;
 
         // Filter by search
         if ($request->filled('search')) {
@@ -19,7 +20,9 @@ class ProductController extends Controller
 
         // Filter by category
         if ($request->filled('category') && $request->category != 'all') {
+            $categoryId = $request->category;
             $productsQuery->where('category_id', $request->category);
+            $selectedCategory = $categories->find($categoryId);
         }
 
         // Sort products
@@ -35,7 +38,7 @@ class ProductController extends Controller
 
         $products = $productsQuery->get();
         
-        return view('pages.products', compact('products', 'categories'));
+        return view('pages.products', compact('products', 'categories', 'selectedCategory'));
     }
 
     public function show(Product $product)

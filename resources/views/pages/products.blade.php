@@ -53,6 +53,24 @@
                     });
                 });
             </script>
+
+            <div class="mt-3 d-flex gap-2 flex-wrap">
+                @if($selectedCategory)
+                    <span class="badge rounded-pill bg-primary text-white fs-6 fw-normal d-flex align-items-center">
+                        {{ $selectedCategory->name }}
+                        {{-- Link untuk menghapus filter kategori --}}
+                        <a href="{{ route('products.index', ['sort' => request('sort'), 'search' => request('search')]) }}" class="btn-close btn-close-white ms-2" style="font-size: 0.7em;"></a>
+                    </span>
+                @endif
+                
+                @if(request('search'))
+                    <span class="badge rounded-pill bg-secondary text-white fs-6 fw-normal d-flex align-items-center">
+                        "{{ request('search') }}"
+                        {{-- Link untuk menghapus filter search --}}
+                        <a href="{{ route('products.index', ['category' => request('category'), 'sort' => request('sort')]) }}" class="btn-close btn-close-white ms-2" style="font-size: 0.7em;"></a>
+                    </span>
+                @endif
+            </div>
         </div>
     </section>
 

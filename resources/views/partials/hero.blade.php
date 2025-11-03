@@ -10,7 +10,7 @@
                     Selamat Datang di <span class="text-secondary">3 Saudara</span>
                 </h1>
                 <p class="fs-5 mb-4 text-white-50">
-                    Menyediakan seafood segar langsung dari laut untuk meja makan Anda. 
+                    Menyediakan seafood segar langsung dari laut untuk meja makan Anda.
                     Kualitas terjamin, harga terjangkau, dan pengiriman cepat.
                 </p>
                 <div class="d-flex flex-wrap gap-3">
@@ -38,10 +38,16 @@
                 </div>
             </div>
             <div class="col-lg-6 d-none d-lg-block">
-                <img src="https://images.unsplash.com/photo-1609149401081-fb5b04b8d451?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmcmVzaCUyMHNlYWZvb2QlMjBtYXJrZXR8ZW58MXx8fHwxNzYxNzIyNTQzfDA&ixlib=rb-4.1.0&q=80&w=1080"
-                     alt="Fresh Seafood"
-                     class="img-fluid rounded-4 shadow-xl"
-                     style="transform: rotate(3deg);">
+                <div class="position-relative">
+                    <div class="position-absolute top-0 start-0 w-100 h-100 bg-gradient-secondary-danger rounded-4"
+                        style="transform: rotate(6deg); z-index: 1;">
+                    </div>
+
+                    
+                    <img src="https://images.unsplash.com/photo-1609149401081-fb5b04b8d451?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmcmVzaCUyMHNlYWZvb2QlMjBtYXJrZXR8ZW58MXx8fHwxNzYxNzIyNTQzfDA&ixlib=rb-4.1.0&q=80&w=1080"
+                        alt="Fresh Seafood" class="img-fluid rounded-4 shadow-xl position-relative"
+                         style="z-index: 2;"> 
+                </div>
             </div>
         </div>
     </div>
