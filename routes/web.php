@@ -68,7 +68,7 @@ Route::middleware('auth')->group(function () {
 });
 
 
-Route::middleware(['auth'])->prefix('cart')->group(function () {
+Route::middleware(['auth', 'verified'])->prefix('cart')->group(function () {
 
     Route::post('/add', [CartController::class, 'add'])->name('cart.add');
 
@@ -77,15 +77,7 @@ Route::middleware(['auth'])->prefix('cart')->group(function () {
     Route::get('/clear', [CartController::class, 'clear'])->name('cart.clear');
 });
 
-Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout')->middleware('auth');
-Route::post('/order/now', [CartController::class, 'orderNow'])->name('order.now')->middleware('auth');
-Route::get('/cart/content', [CartController::class, 'content'])->name('cart.content');
+Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout')->middleware('auth', 'verified');
+Route::post('/order/now', [CartController::class, 'orderNow'])->name('order.now')->middleware('auth', 'verified');
+Route::get('/cart/content', [CartController::class, 'content'])->name('cart.content');  
 
-
-Route::get('/tes-toast', function () {
-
-    // Perintah ini akan redirect balik ke '/'
-    // sambil membawa 'flash session' bernama 'success'
-    return redirect('/')->with('success', 'Ini adalah pesan tes toast global!');
-
-});

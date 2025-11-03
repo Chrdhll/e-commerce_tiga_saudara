@@ -58,7 +58,7 @@
 
                     @if (!auth()->user()->is_admin)
                         {{-- 1. Tombol untuk PELANGGAN (bukan admin) --}}
-                        <button type="button"     class="btn btn-primary w-100"
+                        <button type="button" class="btn btn-primary w-100"
                             @click="$store.cart.addItem({{ $product->id }})"
                             @disabled($product->stock == 0)>
                             <i class="bi bi-cart-plus me-2"></i>
