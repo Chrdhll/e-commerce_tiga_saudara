@@ -39,12 +39,18 @@
                     <p class="text-muted">Pada tahun 2003, kami memutuskan untuk membagikan pengalaman dan pengetahuan kami kepada masyarakat luas. Dimulai dari sebuah warung kecil di pasar tradisional, kini kami telah berkembang menjadi penyedia seafood segar terpercaya.</p>
                     <p class="text-muted">Komitmen kami tetap sama: <span class="text-primary">menyediakan seafood segar berkualitas tinggi dengan harga yang terjangkau</span>. Kepercayaan Anda adalah aset terbesar kami.</p>
                 </div>
-                <div class="col-lg-6">
-                    <img src="https://images.unsplash.com/photo-1609149401081-fb5b04b8d451?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmcmVzaCUyMHNlYWZvb2QlMjBtYXJrZXR8ZW58MXx8fHwxNzYxNzIyNTQzfDA&ixlib=rb-4.1.0&q=80&w=1080" 
-                         alt="3 Saudara Story" 
-                         class="img-fluid rounded-4 shadow-xl" 
-                         style="transform: rotate(3deg);">
+                <div class="col-lg-6 d-none d-lg-block">
+                <div class="position-relative">
+                    <div class="position-absolute top-0 start-0 w-100 h-100 bg-gradient-secondary-danger rounded-4"
+                        style="transform: rotate(6deg); z-index: 1;">
+                    </div>
+
+                    
+                    <img src="https://images.unsplash.com/photo-1609149401081-fb5b04b8d451?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmcmVzaCUyMHNlYWZvb2QlMjBtYXJrZXR8ZW58MXx8fHwxNzYxNzIyNTQzfDA&ixlib=rb-4.1.0&q=80&w=1080"
+                        alt="Fresh Seafood" class="img-fluid rounded-4 shadow-xl position-relative"
+                         style="z-index: 2;"> 
                 </div>
+            </div>
             </div>
         </div>
     </section>
