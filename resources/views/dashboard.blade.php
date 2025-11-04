@@ -16,10 +16,6 @@
                 
                 <div class="col-lg-10">
                     <div classs="card border-0 shadow-sm">
-                        {{-- 
-                        Kita panggil partial yang sama dari halaman profil,
-                        tapi sekarang menggunakan variabel $orders dari rute dashboard
-                        --}}
                         @include('profile.partials.order-history', ['orders' => $orders])
                     </div>
                 </div>

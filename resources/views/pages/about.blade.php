@@ -1,28 +1,38 @@
 @extends('layouts.app')
 
-@section('title', 'about')
+{{-- 
+  Judul halamannya sekarang juga dinamis.
+  Kita pakai '??' sebagai fallback jika datanya kosong.
+--}}
+@section('title', $settings['about_header_title']->value ?? 'Tentang Kami')
 
 @section('content')
+    
     <section class="bg-gradient-primary-dark text-white py-5">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-8">
-                    <h1 class="display-4 mb-4">Tentang 3 Saudara</h1>
+                    {{-- DINAMIS --}}
+                    <h1 class="display-4 mb-4">{{ $settings['about_header_title']->value ?? 'Tentang 3 Saudara' }}</h1>
                     <p class="fs-5 text-white-50 mb-4">
-                        Lebih dari 20 tahun melayani keluarga Indonesia dengan seafood segar berkualitas premium
+                        {{-- DINAMIS --}}
+                        {{ $settings['about_header_subtitle']->value ?? 'Deskripsi header...' }}
                     </p>
                     <div class="d-flex flex-wrap gap-3">
                         <div class="bg-white bg-opacity-25 p-3 rounded-3">
-                            <h4 class="display-6 text-white mb-0">20+</h4>
-                            <p class="text-white-50 mb-0">Tahun Berpengalaman</p>
+                            {{-- DINAMIS --}}
+                            <h4 class="display-6 text-white mb-0">{{ $settings['about_stat_1_num']->value ?? '0+' }}</h4>
+                            <p class="text-white-50 mb-0">{{ $settings['about_stat_1_text']->value ?? 'Stat 1' }}</p>
                         </div>
                         <div class="bg-white bg-opacity-25 p-3 rounded-3">
-                            <h4 class="display-6 text-white mb-0">10K+</h4>
-                            <p class="text-white-50 mb-0">Pelanggan Setia</p>
+                            {{-- DINAMIS --}}
+                            <h4 class="display-6 text-white mb-0">{{ $settings['about_stat_2_num']->value ?? '0+' }}</h4>
+                            <p class="text-white-50 mb-0">{{ $settings['about_stat_2_text']->value ?? 'Stat 2' }}</p>
                         </div>
                         <div class="bg-white bg-opacity-25 p-3 rounded-3">
-                            <h4 class="display-6 text-white mb-0">500+</h4>
-                            <p class="text-white-50 mb-0">Produk Tersedia</p>
+                            {{-- DINAMIS --}}
+                            <h4 class="display-6 text-white mb-0">{{ $settings['about_stat_3_num']->value ?? '0+' }}</h4>
+                            <p class="text-white-50 mb-0">{{ $settings['about_stat_3_text']->value ?? 'Stat 3' }}</p>
                         </div>
                     </div>
                 </div>
@@ -34,21 +44,27 @@
         <div class="container">
             <div class="row g-5 align-items-center">
                 <div class="col-lg-6">
-                    <h2 class="display-5 text-primary mb-3">Cerita Kami</h2>
-                    <p class="text-muted"><span class="text-secondary fw-bold">3 Saudara</span> dimulai dari mimpi sederhana tiga bersaudara yang tumbuh di pesisir pantai. Sejak kecil, kami sudah akrab dengan kehidupan nelayan dan mengenal betul bagaimana cara mendapatkan seafood berkualitas terbaik.</p>
-                    <p class="text-muted">Pada tahun 2003, kami memutuskan untuk membagikan pengalaman dan pengetahuan kami kepada masyarakat luas. Dimulai dari sebuah warung kecil di pasar tradisional, kini kami telah berkembang menjadi penyedia seafood segar terpercaya.</p>
-                    <p class="text-muted">Komitmen kami tetap sama: <span class="text-primary">menyediakan seafood segar berkualitas tinggi dengan harga yang terjangkau</span>. Kepercayaan Anda adalah aset terbesar kami.</p>
+                    {{-- DINAMIS --}}
+                    <h2 class="display-5 text-primary mb-3">{{ $settings['about_story_title']->value ?? 'Cerita Kami' }}</h2>
+                    
+                    {{-- 
+                      Kita pakai {!! nl2br(e(...)) !!}
+                      Ini aman dan akan me-render line break (Enter) dari Textarea
+                    --}}
+                    <p class="text-muted">{!! nl2br(e($settings['about_story_p1']->value ?? 'Paragraf 1...')) !!}</p>
+                    <p class="text-muted">{!! nl2br(e($settings['about_story_p2']->value ?? 'Paragraf 2...')) !!}</p>
+                    <p class="text-muted">{!! nl2br(e($settings['about_story_p3']->value ?? 'Paragraf 3...')) !!}</p>
                 </div>
                 <div class="col-lg-6 d-none d-lg-block">
                 <div class="position-relative">
                     <div class="position-absolute top-0 start-0 w-100 h-100 bg-gradient-secondary-danger rounded-4"
                         style="transform: rotate(6deg); z-index: 1;">
                     </div>
-
                     
-                    <img src="https://images.unsplash.com/photo-1609149401081-fb5b04b8d451?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmcmVzaCUyMHNlYWZvb2QlMjBtYXJrZXR8ZW58MXx8fHwxNzYxNzIyNTQzfDA&ixlib=rb-4.1.0&q=80&w=1080"
-                        alt="Fresh Seafood" class="img-fluid rounded-4 shadow-xl position-relative"
-                         style="z-index: 2;"> 
+                    {{-- DINAMIS (Mengambil gambar dari Storage) --}}
+                    <img src="{{ Storage::url($settings['about_story_image']->value ?? 'images/about-default.jpg') }}"
+                        alt="Cerita 3 Saudara" class="img-fluid rounded-4 shadow-xl position-relative"
+                        style="z-index: 2;"> 
                 </div>
             </div>
             </div>
@@ -58,8 +74,9 @@
     <section class="py-5 bg-light">
         <div class="container">
             <div class="text-center mb-5">
-                <h2 class="display-5 text-primary">Visi & Misi Kami</h2>
-                <p class="fs-5 text-muted">Membangun kepercayaan melalui kualitas dan pelayanan terbaik</p>
+                {{-- DINAMIS --}}
+                <h2 class="display-5 text-primary">{{ $settings['about_vm_title']->value ?? 'Visi & Misi Kami' }}</h2>
+                <p class="fs-5 text-muted">{{ $settings['about_vm_subtitle']->value ?? 'Subjudul Visi Misi...' }}</p>
             </div>
             <div class="row g-4 justify-content-center">
                 <div class="col-lg-5">
@@ -68,8 +85,9 @@
                             <div class="d-inline-flex align-items-center justify-content-center bg-primary text-white rounded-circle mb-3" style="width: 64px; height: 64px;">
                                 <i class="bi bi-bullseye fs-2"></i>
                             </div>
-                            <h3 class="text-primary">Visi</h3>
-                            <p class="text-muted">Menjadi penyedia seafood segar terpercaya nomor satu di Indonesia, yang dikenal dengan kualitas premium, harga terjangkau, dan pelayanan terbaik.</p>
+                            {{-- DINAMIS --}}
+                            <h3 class="text-primary">{{ $settings['about_visi_title']->value ?? 'Visi' }}</h3>
+                            <p class="text-muted">{{ $settings['about_visi_text']->value ?? 'Isi visi...' }}</p>
                         </div>
                     </div>
                 </div>
@@ -79,11 +97,13 @@
                             <div class="d-inline-flex align-items-center justify-content-center bg-secondary text-white rounded-circle mb-3" style="width: 64px; height: 64px;">
                                 <i class="bi bi-heart-fill fs-2"></i>
                             </div>
-                            <h3 class="text-secondary">Misi</h3>
+                            {{-- DINAMIS --}}
+                            <h3 class="text-secondary">{{ $settings['about_misi_title']->value ?? 'Misi' }}</h3>
                             <ul class="list-unstyled text-muted d-flex flex-column gap-2">
-                                <li class="d-flex"><i class="bi bi-check-circle-fill text-secondary me-2 mt-1"></i><span>Menyediakan seafood segar berkualitas tinggi setiap hari.</span></li>
-                                <li class="d-flex"><i class="bi bi-check-circle-fill text-secondary me-2 mt-1"></i><span>Bekerja sama dengan nelayan lokal untuk keberlanjutan.</span></li>
-                                <li class="d-flex"><i class="bi bi-check-circle-fill text-secondary me-2 mt-1"></i><span>Memberikan harga terbaik dan terjangkau untuk semua.</span></li>
+                                {{-- DINAMIS --}}
+                                <li class="d-flex"><i class="bi bi-check-circle-fill text-secondary me-2 mt-1"></i><span>{{ $settings['about_misi_li1']->value ?? 'Misi 1...' }}</span></li>
+                                <li class="d-flex"><i class="bi bi-check-circle-fill text-secondary me-2 mt-1"></i><span>{{ $settings['about_misi_li2']->value ?? 'Misi 2...' }}</span></li>
+                                <li class="d-flex"><i class="bi bi-check-circle-fill text-secondary me-2 mt-1"></i><span>{{ $settings['about_misi_li3']->value ?? 'Misi 3...' }}</span></li>
                             </ul>
                         </div>
                     </div>

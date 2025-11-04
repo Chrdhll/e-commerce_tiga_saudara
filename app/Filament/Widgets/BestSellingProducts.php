@@ -29,10 +29,15 @@ class BestSellingProductsWidget extends BaseWidget
                 Product::query()
                     ->with('category') // Eager load relasi kategori
                     // Buat kolom 'total_penjualan' baru
-                    ->withCount(['orderItems as total_penjualan' => function (Builder $query) {
-                        // 'orderItems' adalah nama relasi di model Product
-                        $query->select(DB::raw('sum(quantity)'));
-                    }])
+                    ->selectRaw(
+                        'products.*, ' .
+
+                        // Duplikat data stok ke kolom virtual 'stock_status'
+                        'products.stock as stock_status, ' .
+
+                        // Hitung total penjualan
+                        '(SELECT SUM(quantity) FROM order_items WHERE order_items.product_id = products.id) as total_penjualan'
+                    )
                     // Urutkan berdasarkan kolom virtual 'total_penjualan'
                     ->orderByDesc('total_penjualan')
                     ->limit(5) // Ambil 5 teratas
@@ -55,14 +60,32 @@ class BestSellingProductsWidget extends BaseWidget
                     ->sortable(),
 
                 // Kolom Status (Stok Aman / Stok Sedang)
-                BadgeColumn::make('status')
+                BadgeColumn::make('stock_status')
                     ->label('Status')
                     // Format tampilan badge berdasarkan stok
-                    ->formatStateUsing(fn ($state, $record): string => $record->stock < 20 ? 'Stok Sedang' : 'Stok Aman')
+                   ->formatStateUsing(function ($state): string {
+            $stock = (int) $state; // $state adalah nilai dari stock_status
+            if ($stock <= 0) {
+                return 'Stok Habis';
+            }
+            if ($stock < 20) {
+                return 'Stok Sedang';
+            }
+            return 'Stok Aman';
+        })
                     // Atur warna badge berdasarkan stok
-                    ->color(fn ($state, $record): string => $record->stock < 20 ? 'warning' : 'success'),
+                    ->color(function ($state): string {
+            $stock = (int) $state;
+            if ($stock <= 0) {
+                return 'danger';
+            }
+            if ($stock < 20) {
+                return 'warning';
+            }
+            return 'success';
+        }),
             ])
-            ->paginated(false) // Matikan paginasi
-            ->striped(); // Buat tabel belang-belang
+            ->paginated(false)
+            ->striped();
     }
 }

@@ -67,12 +67,19 @@ class OrderResource extends Resource
                         ])
                         ->required(),
 
-                    // Tampilkan data lain sebagai Read-Only (jika perlu)
+                    TextInput::make('invoice_number')
+                        ->label('Nomor Invoice')
+                        ->disabled(),
+
                     TextInput::make('user.name')
                         ->label('Customer')
+                        ->formatStateUsing(fn (?Model $record): ?string => $record?->user?->name)
                         ->disabled(),
+
                     TextInput::make('total_price')
-                        ->money('IDR')
+                        ->label('Total Harga')
+                        ->prefix('Rp')
+                        ->formatStateUsing(fn ($state) => number_format($state, 0, ',', '.'))
                         ->disabled(),
                 ]);
 
@@ -111,7 +118,7 @@ class OrderResource extends Resource
                         ->sortable(),
 
                     TextColumn::make('created_at')
-                    ->label('Tgl. Pesan') 
+                    ->label('Tgl. Pesan')
                     ->dateTime()
                     ->sortable(),
                 ])
@@ -156,4 +163,3 @@ class OrderResource extends Resource
         ];
     }
 }
-

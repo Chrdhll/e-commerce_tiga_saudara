@@ -4,17 +4,19 @@
             <div class="col-lg-6">
                 <span class="badge bg-white bg-opacity-25 text-white p-2 rounded-pill mb-3">
                     <i class="bi bi-award-fill text-secondary me-1"></i>
-                    Seafood Segar & Berkualitas
+                    {{-- DINAMIS DARI SETTINGS --}}
+                    {{ $settings['hero_badge']->value ?? 'Badge Teks' }}
                 </span>
                 <h1 class="display-3 fw-bold mb-3">
-                    Selamat Datang di <span class="text-secondary">3 Saudara</span>
+                    {{-- DINAMIS (Pakai {!! !!} agar <span> terbaca) --}}
+                    {!! $settings['hero_title']->value ?? 'Judul Hero' !!}
                 </h1>
                 <p class="fs-5 mb-4 text-white-50">
-                    Menyediakan seafood segar langsung dari laut untuk meja makan Anda.
-                    Kualitas terjamin, harga terjangkau, dan pengiriman cepat.
+                    {{-- DINAMIS DARI SETTINGS --}}
+                    {{ $settings['hero_subtitle']->value ?? 'Subjudul Hero' }}
                 </p>
                 <div class="d-flex flex-wrap gap-3">
-                    <a href="{{ route('products.index') }}" class="btn btn-secondary btn-lg px-4">
+                    <a href="{{ route('products.index') }}" class="btn btn-secondary btn-lg px-4 text-white">
                         Belanja Sekarang
                     </a>
                     <a href="{{ route('about') }}" class="btn btn-outline-light btn-lg px-4">
@@ -24,16 +26,25 @@
 
                 <div class="row g-4 mt-5 pt-4 border-top border-white-50 opacity-50">
                     <div class="col-4">
-                        <h4 class="display-6 text-white mb-0">500+</h4>
-                        <p class="text-white-50">Produk Tersedia</p>
+                        {{-- DINAMIS DARI SETTINGS --}}
+                        <h4 class="display-6 text-white mb-0">
+                            {{ $settings['hero_stat_1_num']->value ?? '0+' }}</h4>
+                        <p class="text-white-50">
+                            {{ $settings['hero_stat_1_text']->value ?? 'Stat 1' }}</p>
                     </div>
                     <div class="col-4">
-                        <h4 class="display-6 text-white mb-0">10K+</h4>
-                        <p class="text-white-50">Pelanggan Puas</p>
+                        {{-- DINAMIS DARI SETTINGS --}}
+                        <h4 class="display-6 text-white mb-0">
+                            {{ $settings['hero_stat_2_num']->value ?? '0+' }}</h4>
+                        <p class="text-white-50">
+                            {{ $settings['hero_stat_2_text']->value ?? 'Stat 2' }}</p>
                     </div>
                     <div class="col-4">
-                        <h4 class="display-6 text-white mb-0">100%</h4>
-                        <p class="text-white-50">Segar & Halal</p>
+                        {{-- DINAMIS DARI SETTINGS --}}
+                        <h4 class="display-6 text-white mb-0">
+                            {{ $settings['hero_stat_3_num']->value ?? '0+' }}</h4>
+                        <p class="text-white-50">
+                            {{ $settings['hero_stat_3_text']->value ?? 'Stat 3' }}</p>
                     </div>
                 </div>
             </div>
@@ -43,10 +54,9 @@
                         style="transform: rotate(6deg); z-index: 1;">
                     </div>
 
-                    
-                    <img src="https://images.unsplash.com/photo-1609149401081-fb5b04b8d451?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmcmVzaCUyMHNlYWZvb2QlMjBtYXJrZXR8ZW58MXx8fHwxNzYxNzIyNTQzfDA&ixlib=rb-4.1.0&q=80&w=1080"
-                        alt="Fresh Seafood" class="img-fluid rounded-4 shadow-xl position-relative"
-                         style="z-index: 2;"> 
+                    {{-- DINAMIS (Panggil gambar dari Storage) --}}
+                    <img src="{{ Storage::url($settings['hero_image']->value ?? 'images/hero-default.jpg') }}"
+                        alt="Fresh Seafood" class="img-fluid rounded-4 shadow-xl position-relative" style="z-index: 2;">
                 </div>
             </div>
         </div>

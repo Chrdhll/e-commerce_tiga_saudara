@@ -6,6 +6,9 @@ use App\Filament\Resources\SettingResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
+use Illuminate\Support\Facades\Cache;
+
+
 class EditSetting extends EditRecord
 {
     protected static string $resource = SettingResource::class;
@@ -13,12 +16,18 @@ class EditSetting extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            // Actions\DeleteAction::make(),
         ];
     }
 
      protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
+    }
+
+    protected function afterSave(): void
+    {
+        // Hapus cache 'all_settings'
+        Cache::forget('all_settings');
     }
 }
