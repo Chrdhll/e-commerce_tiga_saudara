@@ -73,7 +73,7 @@
                     @auth
                         {{-- Jika sudah login, cek apakah dia BUKAN admin --}}
                         @if (!auth()->user()->is_admin)
-                            <form action="{{ route('cart.checkout') }}" method="POST">
+                            <form action="{{ route('cart.checkout') }}" method="POST" target="_blank">
                                 @csrf
                                 <button type="submit" class="btn w-100 fs-6 py-2"
                                     style="background-color: #25D366; color: white;">

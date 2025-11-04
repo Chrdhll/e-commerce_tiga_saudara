@@ -99,7 +99,7 @@
                                         </button>
                                     </div>
                                 <div class="col-12">
-                                    <form action="{{ route('order.now') }}" method="POST" class="w-100">
+                                    <form action="{{ route('order.now') }}" method="POST" class="w-100" target="_blank">
                                         @csrf
                                         <input type="hidden" name="product_id"
                                             value="{{ $product->id }}">
