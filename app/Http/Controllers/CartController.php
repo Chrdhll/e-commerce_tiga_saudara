@@ -15,8 +15,6 @@ use Illuminate\Support\Facades\Cache;
 
 class CartController extends Controller
 {
-
-
     private function getWhatsappNumber()
     {
         return Cache::rememberForever('setting.whatsapp_number', function () {
@@ -84,6 +82,14 @@ class CartController extends Controller
                     'quantity' => $item->qty,
                     'price' => $item->price, // Harga per item (sudah dihitung diskon saat 'add')
                 ]);
+
+                $product = Product::find($item->id);
+                if ($product) {
+                    // Kurangi stok-nya
+                    $product->decrement('stock', $item->qty);
+                }
+
+
                 $waMessage .= "- {$item->name} (x{$item->qty}) @ Rp " . number_format($item->price, 0, ',', '.') . "\n";
             }
 
@@ -171,6 +177,11 @@ class CartController extends Controller
                 'quantity' => $quantity,
                 'price' => $pricePerItem,
             ]);
+
+
+            // Langsung kurangi stok produk yang sudah kita 'find' di atas
+            $product->decrement('stock', $quantity);
+
 
             DB::commit();
 
