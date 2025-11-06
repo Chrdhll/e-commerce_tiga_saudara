@@ -76,4 +76,9 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
 
         return false; // Blokir akses ke panel lain (jika ada)
     }
+
+    public function isAdmin(): bool
+    {
+        return $this->is_admin; // Assumes 'is_admin' is a boolean (true/false) column
+    }
 }

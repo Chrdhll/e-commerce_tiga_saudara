@@ -1,7 +1,7 @@
 @props(['category'])
 
 {{-- Ubah <div> terluar menjadi <a> --}}
-<a href="{{ route('products.index', ['category' => $category->id]) }}" 
+<a href="{{ route('products.index', ['category' => $category->slug]) }}" 
    class="card text-white card-category border-0 shadow-lg text-decoration-none" 
    style="overflow: hidden;">
     

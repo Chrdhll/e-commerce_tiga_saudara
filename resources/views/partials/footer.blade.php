@@ -40,7 +40,7 @@
                     <ul class="list-unstyled d-flex flex-column" style="gap: 0.5rem;">
                         @foreach ($footerCategories as $category)
                             <li>
-                                <a href="{{ route('products.index', ['category' => $category->id]) }}"
+                                <a href="{{ route('products.index', ['category' => $category->slug]) }}"
                                     class="text-white-50 link-light text-decoration-none">
                                     {{ $category->name }}
                                 </a>
