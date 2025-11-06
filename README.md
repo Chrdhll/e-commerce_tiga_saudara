@@ -1,59 +1,53 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# E-Commerce Tiga Saudara
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+> Aplikasi e-commerce (Toko Online) "Tiga Saudara", sebuah platform penjualan seafood yang dibangun menggunakan Laravel 12.
 
-## About Laravel
+Aplikasi ini memiliki storefront (halaman toko) yang responsif untuk pelanggan, dan panel admin yang *powerful* (Filament) untuk manajemen toko. Fitur unik dari aplikasi ini adalah sistem checkout "semi-manual" yang terintegrasi langsung dengan WhatsApp, di mana pesanan akan tercatat di database terlebih dahulu sebelum dikonfirmasi melalui chat.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🚀 Fitur Utama
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 🛍️ Storefront (Bootstrap 5)
+* Halaman Beranda dengan Hero Section dan daftar produk/kategori.
+* Halaman Produk dengan fitur pencarian dan filter berdasarkan kategori (slug).
+* Halaman Detail Produk dengan galeri, deskripsi, dan produk terkait.
+* Halaman Kategori untuk menjelajahi produk.
+* Halaman Kontak dengan Peta Lokasi dan Saluran Bantuan.
 
-## Learning Laravel
+### 🛒 Keranjang Belanja (AJAX)
+* Tambah/Update/Hapus item keranjang tanpa *reload* halaman (menggunakan Alpine.js & Axios).
+* Ikon keranjang di navbar dengan *badge* jumlah item yang *real-time*.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### 📲 Sistem Checkout (WhatsApp)
+* Tombol "Tambah ke Keranjang" (AJAX).
+* Tombol "Pesan Sekarang" (Bypass keranjang, langsung ke WA).
+* Saat checkout, data pesanan (Orders & OrderItems) disimpan ke database dengan status "Pending".
+* Pelanggan secara otomatis diarahkan ke WhatsApp dengan pesan yang sudah terisi (termasuk Invoice Number) untuk konfirmasi pembayaran.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 👤 Manajemen Pengguna (Laravel Breeze)
+* Sistem registrasi dan login pelanggan (termasuk login via Google).
+* Halaman Dashboard Pelanggan untuk melihat Riwayat Pembelian.
+* Halaman Profil untuk mengubah Nama, Email, Password, Alamat, dan Nomor Telepon.
 
-## Laravel Sponsors
+### ⚙️ Panel Admin (Filament 3)
+* Panel admin di `/admin` untuk manajemen Toko.
+* Manajemen Produk, Kategori, dan Pesanan.
+* Admin dapat melihat pesanan baru yang masuk dan mengubah status serta *payment\_status* (misal, dari "Pending" menjadi "Selesai").
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## 🛠️ Tumpukan Teknologi (Tech Stack)
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Aplikasi ini menggunakan pendekatan *hybrid* untuk *styling* agar dapat mengintegrasikan *framework* yang berbeda.
 
-## Contributing
+* **Backend:** PHP 8.4+, Laravel 12, MySQL
+* **Panel Admin:** Filament 3 (menggunakan Tailwind CSS)
+* **Autentikasi:** Laravel Breeze (menggunakan Tailwind CSS)
+* **Storefront (Halaman Toko):** Bootstrap 5.3 & Sass (SCSS)
+* **Frontend Interactivity:** Alpine.js (untuk keranjang) & Axios (untuk AJAX)
+* **Bundler:** Vite
+* **PHP Packages:** `hardevine/shoppingcart` (untuk logika keranjang belanja)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
