@@ -20,9 +20,18 @@ class ProductController extends Controller
 
         // Filter by category
         if ($request->filled('category') && $request->category != 'all') {
-            $categoryId = $request->category;
-            $productsQuery->where('category_id', $request->category);
-            $selectedCategory = $categories->find($categoryId);
+            
+            // 1. Ambil slug dari request
+            $categorySlug = $request->category; // e.g., "ikan-segar"
+
+            // 2. Cari kategori berdasarkan slug-nya
+            $selectedCategory = $categories->firstWhere('slug', $categorySlug);
+
+            // 3. Jika kategori ditemukan, filter produk berdasarkan ID-nya
+            if ($selectedCategory) {
+                $productsQuery->where('category_id', $selectedCategory->id);
+            }
+            
         }
 
         // Sort products

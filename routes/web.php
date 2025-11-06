@@ -50,9 +50,9 @@ Route::get('/auth/google/callback', [GoogleLoginController::class, 'handleGoogle
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
         // Arahkan ke Filament jika admin, atau ke dashboard biasa
-        // if (auth()->user()->isAdmin()) {
-        //     return redirect('/admin');
-        // }
+        if (auth()->user()->isAdmin()) {
+            return redirect('/admin');
+        }
         $orders = Auth::user()->orders()
                             ->with('items.product') // Ambil juga item & info produknya
                             ->latest()
