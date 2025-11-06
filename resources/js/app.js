@@ -1,5 +1,7 @@
 // 1. Impor Bootstrap JS (termasuk Popper)
-import "~bootstrap/dist/js/bootstrap.bundle.min.js";
+import * as bootstrap from "~bootstrap/dist/js/bootstrap.bundle.min.js";
+
+window.bootstrap = bootstrap;
 
 // 2. Impor Axios (diambil dari bootstrap.js Laravel)
 import axios from "axios";
@@ -23,8 +25,6 @@ Alpine.store("cart", {
             this.subtotal = response.data.subtotal;
         } catch (error) {
             console.error("Gagal memuat keranjang:", error);
-            // Non-aktifkan toast error saat load agar tidak mengganggu
-            // this.toast('Gagal memuat keranjang', 'danger');
         }
     },
 

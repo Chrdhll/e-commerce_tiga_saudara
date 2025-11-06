@@ -10,6 +10,11 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Auth\GoogleLoginController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
+use App\Models\Category;
+use App\Models\Product;
+use App\Models\Page;
+
+
 /*
 |--------------------------------------------------------------------------
 | Rute Storefront (Publik) - Menggunakan Bootstrap
@@ -80,4 +85,3 @@ Route::middleware(['auth', 'verified'])->prefix('cart')->group(function () {
 Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout')->middleware('auth', 'verified');
 Route::post('/order/now', [CartController::class, 'orderNow'])->name('order.now')->middleware('auth', 'verified');
 Route::get('/cart/content', [CartController::class, 'content'])->name('cart.content');  
-

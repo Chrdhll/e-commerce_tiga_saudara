@@ -1,93 +1,99 @@
-@php
-
-$alert = null;
-if (session('success')) {
-    $alert = ['type' => 'success', 'message' => session('success')];
-} elseif (session('error') || $errors->any()) { 
-    // Tangkap error validasi umum atau error spesifik
-    $alert = ['type' => 'danger', 'message' => session('error') ?? 'Data yang Anda masukkan tidak valid.'];
-} elseif (session('warning')) {
-    $alert = ['type' => 'warning', 'message' => session('warning')];
-} elseif (session('info')) {
-    $alert = ['type' => 'info', 'message' => session('info')];
-}
-@endphp
-
-<div 
-    class="toast-container position-fixed top-0 end-0 p-3" 
-    style="z-index: 1100"
-    
-    x-data="{
-        toast: null,
-        type: 'success',
-        message: '',
-        
-        init() {
-            this.toast = new bootstrap.Toast(this.$refs.toastEl, {
-                delay: 5000 // Toast hilang setelah 5 detik
-            });
-            
-            @if($alert)
-                // Jika ada, kita panggil fungsi showToast
-                this.showToast(@json($alert['type']), @json($alert['message']));
-            @endif
-        },
-        
-        showToast(type, message) {
-            this.type = type;
-            this.message = message;
-            
-            // Hapus class warna lama, tambahkan class baru
-            this.$refs.toastEl.classList.remove('text-bg-success', 'text-bg-danger', 'text-bg-warning', 'text-bg-info');
-            this.$refs.toastEl.classList.add('text-bg-' + this.getBootstrapClass(type));
-            
-            this.toast.show();
-        },
-
-        '@show-toast.window.document': 'showToast($event.detail.type, $event.detail.message)',
-
-        getIconClass(type) {
-            switch (type) {
-                case 'success': return 'bi-check-circle-fill';
-                case 'danger': return 'bi-exclamation-triangle-fill';
-                case 'warning': return 'bi-exclamation-triangle-fill';
-                case 'info': return 'bi-info-circle-fill';
-                default: return 'bi-info-circle-fill';
-            }
-        },
-        getTitle(type) {
-            switch (type) {
-                case 'success': return 'Sukses';
-                case 'danger': return 'Error';
-                case 'warning': return 'Peringatan';
-                case 'info': return 'Info';
-                default: return 'Notifikasi';
-            }
-        },
-        getBootstrapClass(type) {
-            switch (type) {
-                case 'success': return 'success';
-                case 'danger': return 'danger';
-                case 'warning': return 'warning';
-                case 'info': return 'info';
-                default: return 'info';
-            }
-        }
-    }"
->
-    <div 
-        class="toast" 
-        role="alert" 
-        aria-live="assertive" 
-        aria-atomic="true" 
-        x-ref="toastEl"
-    >
-        <div class="toast-header" :class="'text-bg-' + getBootstrapClass(type)">
-            <i class="bi fs-5 me-2" :class="getIconClass(type)"></i>
-            <strong class="me-auto" x-text="getTitle(type)"></strong>
+{{-- Ini adalah HTML untuk Bootstrap Toast --}}
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100">
+    <div id="globalToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+        <div class="toast-header">
+            {{-- Icon dan Judul akan diisi oleh JS --}}
+            <i id="globalToastIcon" class="bi fs-5 me-2"></i>
+            <strong id="globalToastTitle" class="me-auto"></strong>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
-        <div class="toast-body" x-text="message">
-            </div>
+        <div class="toast-body bg-white" id="globalToastMessage">
+            {{-- Pesan akan diisi oleh JS --}}
+        </div>
     </div>
 </div>
+
+<script>
+    // 1. Tunggu sampai semua HTML & JS (termasuk app.js) selesai di-load
+    document.addEventListener('DOMContentLoaded', () => {
+        
+        // 2. Ambil elemen-elemen toast-nya
+        const toastEl = document.getElementById('globalToast');
+        if (!toastEl) return; // Keluar jika elemen tidak ditemukan
+
+        const titleEl = document.getElementById('globalToastTitle');
+        const iconEl = document.getElementById('globalToastIcon');
+        const headerEl = toastEl.querySelector('.toast-header');
+        const messageEl = document.getElementById('globalToastMessage');
+        
+        // 3. Buat SATU instance toast Bootstrap (ini pakai window.bootstrap dari app.js-mu)
+        let toastInstance = null;
+        if (window.bootstrap && window.bootstrap.Toast) {
+             toastInstance = new window.bootstrap.Toast(toastEl);
+        } else {
+            console.error('Bootstrap Toast library not found. Toast tidak akan berfungsi.');
+            return;
+        }
+
+        // 4. Buat fungsi "pintar" untuk menampilkan toast
+        const showToast = (type, message) => {
+            if (!toastInstance) return;
+
+            // Set pesan
+            messageEl.innerText = message;
+            
+            // Hapus class warna lama
+            headerEl.classList.remove('text-bg-success', 'text-bg-danger', 'text-bg-warning', 'text-bg-info');
+            
+            // Atur warna, ikon, dan judul baru
+            switch (type) {
+                case 'success':
+                    titleEl.innerText = 'Sukses';
+                    iconEl.className = 'bi bi-check-circle-fill fs-5 me-2';
+                    headerEl.classList.add('text-bg-success');
+                    break;
+                case 'danger':
+                case 'error': // Menangani 'error' dari PHP
+                    titleEl.innerText = 'Error';
+                    iconEl.className = 'bi bi-exclamation-triangle-fill fs-5 me-2';
+                    headerEl.classList.add('text-bg-danger');
+                    break;
+                case 'warning':
+                    titleEl.innerText = 'Peringatan';
+                    iconEl.className = 'bi bi-exclamation-triangle-fill fs-5 me-2';
+                    headerEl.classList.add('text-bg-warning');
+                    break;
+                case 'info':
+                default:
+                    titleEl.innerText = 'Info';
+                    iconEl.className = 'bi bi-info-circle-fill fs-5 me-2';
+                    headerEl.classList.add('text-bg-info');
+                    break;
+            }
+            
+            // Tampilkan toast-nya
+            toastInstance.show();
+        };
+
+        // 5. TRIGGER 1: Dengarkan event dari JavaScript (app.js)
+        window.addEventListener('show-toast', (event) => {
+            showToast(event.detail.type, event.detail.message);
+        });
+
+        // 6. TRIGGER 2: Cek 'flash session' dari PHP saat halaman di-load
+        @if (session('success'))
+            showToast('success', @json(session('success')));
+
+        {{-- INI DIA TAMBAHANNYA! Kita cek 'status' juga --}}
+        @elseif (session('status')) 
+            showToast('success', @json(session('status'))); {{-- Anggap 'status' sebagai 'success' --}}
+
+        @elseif (session('error') || $errors->any())
+            showToast('danger', @json(session('error') ?? 'Data yang Anda masukkan tidak valid.'));
+        @elseif (session('warning'))
+            showToast('warning', @json(session('warning')));
+        @elseif (session('info'))
+            showToast('info', @json(session('info')));
+        @endif
+    });
+</script>

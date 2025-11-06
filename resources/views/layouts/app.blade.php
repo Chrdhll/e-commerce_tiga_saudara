@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{{ asset('images/logo_fix.png') }}" type="image/png" sizes="16x16">
     <title>TigaSaudara - @yield('title')</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -35,26 +36,17 @@
         @include('partials.offcanvas-cart')
     </div>
 
-    <div x-data="{ show: false, message: '', type: 'success' }"
-         @show-toast.window="message = $event.detail.message; type = $event.detail.type; show = true; setTimeout(() => show = false, 3000)"
-         x-show="show"
-         x-transition
-         class="position-fixed top-0 end-0 p-3" style="z-index: 9999">
-        <div :class="`alert alert-${type} alert-dismissible fade show`" role="alert">
-            <span x-text="message"></span>
-            <button type="button" class="btn-close" @click="show = false"></button>
-        </div>
-    </div>
+    <x-global-toast />
 
     @if (session('show_login_popup'))
         <script>
             // Kita tunggu sampai semua elemen halaman (CSS, gambar, dan file app.js) 
             // selesai di-load
             window.addEventListener('load', (event) => {
-                
+
                 // 1. Tentukan ID modal-mu
                 // (Ganti 'authModal' dengan ID aslinya dari partials/modal-auth.blade.php)
-                const modalId = 'authModal'; 
+                const modalId = 'authModal';
                 const loginModalElement = document.getElementById(modalId);
 
                 if (loginModalElement) {

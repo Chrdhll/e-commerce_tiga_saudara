@@ -20,6 +20,8 @@ use Filament\Tables\Actions\ExportAction;
 use App\Filament\Resources\OrderResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\OrderResource\RelationManagers;
+use Filament\Tables\Actions\Action;
+use Maatwebsite\Excel\Facades\Excel;
 
 class OrderResource extends Resource
 {
@@ -138,10 +140,16 @@ class OrderResource extends Resource
                     Tables\Actions\ViewAction::make(),
                 ])
                 ->headerActions([
-                  ExportAction::make()
+                 Action::make('export')
                 ->label('Download Laporan (Excel)')
-                ->exporter(OrdersExport::class)
-                ->fileName(fn (): string => 'laporan-pesanan-'.date('Y-m-d').'.xlsx')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->action(function () {
+                    // Ini adalah "aksi" yang akan dijalankan saat tombol diklik
+                    return Excel::download(
+                        new OrdersExport(),
+                        'laporan-pesanan-' . date('Y-m-d') . '.xlsx'
+                    );
+                }),
                 ]);
 
 
