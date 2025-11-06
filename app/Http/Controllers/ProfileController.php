@@ -63,6 +63,6 @@ class ProfileController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return Redirect::to('/');
+        return Redirect::route('home')->with('status', 'Akun Anda telah berhasil dihapus.');
     }
 }
